@@ -2,6 +2,8 @@
 > REST Client for developers with a focus on [identity](#identity), [secret management](#secret-management) and 
 > [request organisation](#request-organisation)
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/michaelcowan/gregbot/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/michaelcowan/gregbot/tree/master)
+
 ## Identity
 First class identity support by providing:
 1. a plug-in architecture for authentication providers
