@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2023 Mike Cowan.
+  ~
+  ~ This source code is subject to the terms of the GNU General Public
+  ~ License, version 3. If a copy of the GPL was not distributed with this
+  ~ file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -8,9 +17,31 @@
     <artifactId>gregbot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <licenses>
+        <license>
+            <name>GPL-v3.0</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Michael Cowan</name>
+            <email>hello@mcowan.io</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/michaelcowan/gregbot.git</connection>
+        <developerConnection>scm:git:ssh://github.com/michaelcowan/gregbot.git</developerConnection>
+        <url>https://github.com/michaelcowan/gregbot</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
