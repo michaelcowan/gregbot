@@ -1,0 +1,13 @@
+{
+  "identities": {
+    "JsonBlob Prod": {
+      "category": "Production",
+      "secrets": "Blt Vault",
+      "variables": {
+        "api_key": "json_blob"
+      },
+      "plugin": {
+      }
+    }
+  }
+}
