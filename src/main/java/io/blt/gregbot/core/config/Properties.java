@@ -29,7 +29,13 @@ public record Properties(
 
     public record Plugin(
             @NotNull String type,
-            @NotNull ObjectNode properties) {}
+            @NotNull ObjectNode properties) {
+
+        public <T> T readPropertiesAs(Class<T> type) throws IOException {
+            return validateAndReturn(MAPPER.treeToValue(properties, type));
+        }
+
+    }
 
     private static final ObjectMapper MAPPER = buildMapper();
     private static final Validator VALIDATOR = buildValidator();
@@ -44,8 +50,8 @@ public record Properties(
         }
     }
 
-    private static Properties validateAndReturn(Properties properties) throws IOException {
-        var violations = VALIDATOR.validate(properties)
+    private static <T> T validateAndReturn(T object) throws IOException {
+        var violations = VALIDATOR.validate(object)
                 .stream()
                 .map(Properties::describe)
                 .collect(Collectors.joining(", "));
@@ -54,7 +60,7 @@ public record Properties(
             throw new IOException("Failed validation because " + violations);
         }
 
-        return properties;
+        return object;
     }
 
     private static <T> String describe(ConstraintViolation<T> violation) {

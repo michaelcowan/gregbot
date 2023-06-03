@@ -1,0 +1,18 @@
+{
+  "identities": {
+    "JsonBlob Prod": {
+      "category": "Production",
+      "secrets": "Blt Vault",
+      "variables": {
+        "api_key": "json_blob"
+      },
+      "plugin": {
+        "type": "io.blt.gregbot.plugin.Auth",
+        "properties": {
+          "secret": "[blt/jsonblob/prod/secret]",
+          "variable": "auth_token"
+        }
+      }
+    }
+  }
+}
