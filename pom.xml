@@ -45,14 +45,38 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <assertj.version>3.24.2</assertj.version>
-        <junit.version>5.10.0-M1</junit.version>
-        <surefire-plugin.version>3.1.0</surefire-plugin.version>
+        <blt-assertj.version>1.0.1</blt-assertj.version>
+        <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <jackson.version>2.15.2</jackson.version>
+        <jakarta-el.version>5.0.0-M1</jakarta-el.version>
+        <junit.version>5.10.0</junit.version>
+        <surefire-plugin.version>3.1.2</surefire-plugin.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>${jakarta-el.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
 
         <!-- Test dependencies -->
 
+        <dependency>
+            <groupId>io.blt</groupId>
+            <artifactId>blt-assertj</artifactId>
+            <version>${blt-assertj.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
