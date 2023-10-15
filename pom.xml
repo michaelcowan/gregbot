@@ -47,7 +47,7 @@
         <assertj.version>3.24.2</assertj.version>
         <blt-assertj.version>1.0.1</blt-assertj.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
-        <jackson.version>2.15.2</jackson.version>
+        <jackson.version>2.15.3</jackson.version>
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
         <junit.version>5.10.0</junit.version>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
