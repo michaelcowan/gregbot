@@ -1,0 +1,8 @@
+{
+  "client": {
+    "version": "HTTP_1_1",
+    "redirect": "NORMAL",
+    "connectionTimeout": 60000,
+    "requestTimeout": 30000
+  }
+}
