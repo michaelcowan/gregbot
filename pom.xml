@@ -46,6 +46,7 @@
 
         <assertj.version>3.24.2</assertj.version>
         <blt-assertj.version>1.0.1</blt-assertj.version>
+        <blt-core.version>1.0.3</blt-core.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <jackson.version>2.15.3</jackson.version>
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
@@ -58,6 +59,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.blt</groupId>
+            <artifactId>blt-core</artifactId>
+            <version>${blt-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
