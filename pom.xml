@@ -47,11 +47,13 @@
         <assertj.version>3.24.2</assertj.version>
         <blt-assertj.version>1.0.1</blt-assertj.version>
         <blt-core.version>1.0.3</blt-core.version>
+        <commons-lang3.version>3.13.0</commons-lang3.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <jackson.version>2.15.3</jackson.version>
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
         <junit.version>5.10.0</junit.version>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
+        <wiremock.version>3.0.1</wiremock.version>
     </properties>
 
     <dependencies>
@@ -66,6 +68,11 @@
             <version>${blt-core.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.el</artifactId>
             <version>${jakarta-el.version}</version>
@@ -78,6 +85,12 @@
 
         <!-- Test dependencies -->
 
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.blt</groupId>
             <artifactId>blt-assertj</artifactId>
