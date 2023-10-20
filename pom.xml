@@ -49,6 +49,7 @@
         <blt-core.version>1.0.3</blt-core.version>
         <commons-lang3.version>3.13.0</commons-lang3.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <httpcore5.version>5.2.3</httpcore5.version>
         <jackson.version>2.15.3</jackson.version>
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
         <junit.version>5.10.0</junit.version>
@@ -71,6 +72,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
+            <version>${httpcore5.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
