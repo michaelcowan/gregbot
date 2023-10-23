@@ -46,18 +46,44 @@
 
         <assertj.version>3.24.2</assertj.version>
         <blt-assertj.version>1.0.1</blt-assertj.version>
+        <blt-core.version>1.0.3</blt-core.version>
+        <commons-lang3.version>3.13.0</commons-lang3.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <httpcore5.version>5.2.3</httpcore5.version>
         <jackson.version>2.15.3</jackson.version>
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
         <junit.version>5.10.0</junit.version>
+        <mockito.version>5.6.0</mockito.version>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
+        <vault-driver.version>5.1.0</vault-driver.version>
+        <wiremock.version>3.0.1</wiremock.version>
     </properties>
 
     <dependencies>
         <dependency>
+            <groupId>com.bettercloud</groupId>
+            <artifactId>vault-java-driver</artifactId>
+            <version>${vault-driver.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.blt</groupId>
+            <artifactId>blt-core</artifactId>
+            <version>${blt-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
+            <version>${httpcore5.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
@@ -72,6 +98,12 @@
 
         <!-- Test dependencies -->
 
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.blt</groupId>
             <artifactId>blt-assertj</artifactId>
@@ -93,6 +125,18 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
