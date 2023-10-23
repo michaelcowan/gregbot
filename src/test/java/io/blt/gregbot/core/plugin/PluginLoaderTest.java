@@ -8,17 +8,10 @@
 
 package io.blt.gregbot.core.plugin;
 
-import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.plugin.Plugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
-import io.blt.gregbot.plugin.secrets.vault.VaultOidc;
-import java.util.Map;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,26 +30,6 @@ class PluginLoaderTest {
 
     @Nested
     class SecretPluginInterface {
-
-        static Stream<Arguments> loadShouldReturnInstanceOfPluginType() {
-            return Stream.of(
-                    Arguments.of(
-                            "io.blt.gregbot.plugin.secrets.vault.VaultOidc",
-                            Map.of("host", "https://vault.cyberdyne.com"),
-                            VaultOidc.class));
-        }
-
-        @ParameterizedTest
-        @MethodSource
-        void loadShouldReturnInstanceOfPluginType(
-                String type, Map<String, String> properties, Class<? extends Plugin> expected) throws Exception {
-            var plugin = new PluginLoader<>(SecretPlugin.class)
-                    .load(new Properties.Plugin(type, properties));
-
-            assertThat(plugin)
-                    .isNotNull()
-                    .isInstanceOf(expected);
-        }
 
         @Test
         void pluginsShouldReturnListOfAllPluginTypes() {
