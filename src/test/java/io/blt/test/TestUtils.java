@@ -11,12 +11,19 @@ package io.blt.test;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 public final class TestUtils {
 
     private TestUtils() {
         throw new IllegalAccessError("Utility class should be accessed statically and never constructed");
+    }
+
+    public static <T> void doIgnoreExceptions(Callable<T> callable) {
+        try {
+            callable.call();
+        } catch (Exception ignored) { }
     }
 
     public static <T> Stream<Field> streamFieldsOfNestedTypes(Class<T> type) {
