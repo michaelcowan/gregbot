@@ -8,7 +8,9 @@
 
 package io.blt.gregbot.plugin.secrets;
 
-public class SecretException extends Exception {
+import io.blt.gregbot.plugin.PluginException;
+
+public class SecretException extends PluginException {
 
     public SecretException(String message, Throwable cause) {
         super(message, cause);
