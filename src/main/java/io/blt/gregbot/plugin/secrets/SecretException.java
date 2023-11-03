@@ -8,11 +8,10 @@
 
 package io.blt.gregbot.plugin.secrets;
 
-import io.blt.gregbot.plugin.Plugin;
-import java.util.Map;
+public class SecretException extends Exception {
 
-public interface SecretPlugin extends Plugin {
-
-    Map<String, String> secretsForPath(String path) throws SecretException;
+    public SecretException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

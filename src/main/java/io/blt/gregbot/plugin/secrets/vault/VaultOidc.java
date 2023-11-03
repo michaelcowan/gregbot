@@ -11,6 +11,7 @@ package io.blt.gregbot.plugin.secrets.vault;
 import com.bettercloud.vault.Vault;
 import com.bettercloud.vault.VaultConfig;
 import com.bettercloud.vault.VaultException;
+import io.blt.gregbot.plugin.secrets.SecretException;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import io.blt.gregbot.plugin.secrets.vault.connector.VaultConnector;
 import io.blt.gregbot.plugin.secrets.vault.oidc.Oidc;
@@ -45,13 +46,13 @@ public class VaultOidc implements SecretPlugin {
     }
 
     @Override
-    public Map<String, String> secretsForPath(String path) {
+    public Map<String, String> secretsForPath(String path) throws SecretException {
         try {
             return vault.logical()
                     .read(path)
                     .getData();
         } catch (VaultException e) {
-            throw new RuntimeException(e);
+            throw new SecretException("Failed to fetch a secret for path: " + path, e);
         }
     }
 }
