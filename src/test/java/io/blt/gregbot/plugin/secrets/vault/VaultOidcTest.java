@@ -21,6 +21,7 @@ import org.assertj.core.api.SoftAssertionsProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -33,6 +34,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,14 +69,62 @@ class VaultOidcTest {
         doWithMockedDesktop(() -> new VaultOidc().load(requiredProperties));
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "engine, not-a-number"
+    })
+    void loadShouldThrowWhenPropertyIsInvalid(String key, String value) {
+        var properties = requiredPropertiesWith(key, value);
+
+        assertThatException()
+                .isThrownBy(() -> new VaultOidc().load(properties))
+                .withMessageContaining(value);
+    }
+
     @Test
-    void secretsForPathShouldReturnResultFromVault() throws Exception {
+    void secretsForPathShouldReturnResultFromVaultDefaultingToEngineVersion2() throws Exception {
         mockVault();
 
         var plugin = new VaultOidc();
         doWithMockedDesktop(() -> plugin.load(requiredProperties));
 
-        var result = plugin.secretsForPath("mock-secret-path");
+        var result = plugin.secretsForPath("mock/path");
+
+        assertThat(result)
+                .containsOnly(
+                        entry("mock-secret-key1", "mock-secret-value1"),
+                        entry("mock-secret-key2", "mock-secret-value2")
+                );
+    }
+
+    @Test
+    void secretsForPathShouldReturnResultFromVaultUsingEngineVersion2() throws Exception {
+        mockVault();
+
+        var properties = requiredPropertiesWith("engine", "2");
+
+        var plugin = new VaultOidc();
+        doWithMockedDesktop(() -> plugin.load(properties));
+
+        var result = plugin.secretsForPath("mock/path");
+
+        assertThat(result)
+                .containsOnly(
+                        entry("mock-secret-key1", "mock-secret-value1"),
+                        entry("mock-secret-key2", "mock-secret-value2")
+                );
+    }
+
+    @Test
+    void secretsForPathShouldReturnResultFromVaultUsingEngineVersion1() throws Exception {
+        mockVault(true);
+
+        var properties = requiredPropertiesWith("engine", "1");
+
+        var plugin = new VaultOidc();
+        doWithMockedDesktop(() -> plugin.load(properties));
+
+        var result = plugin.secretsForPath("mock/path");
 
         assertThat(result)
                 .containsOnly(
@@ -89,7 +139,17 @@ class VaultOidcTest {
         return properties;
     }
 
+    private Map<String, String> requiredPropertiesWith(String key, String value) {
+        var properties = new HashMap<>(requiredProperties);
+        properties.put(key, value);
+        return properties;
+    }
+
     private void mockVault() {
+        mockVault(false);
+    }
+
+    private void mockVault(boolean useEngineVersion1) {
         stubFor(post("/v1/auth/oidc/oidc/auth_url")
                 .withHost(equalTo("mock-host"))
                 .willReturn(okJson("""
@@ -123,16 +183,26 @@ class VaultOidcTest {
                             }
                             """)));
 
-        stubFor(get("/v1/mock-secret-path")
+        stubFor(get(useEngineVersion1 ? "/v1/mock/path" : "/v1/mock/data/path")
                 .withHost(equalTo("mock-host"))
-                .willReturn(okJson("""
+                .willReturn(okJson(useEngineVersion1 ? """
                             {
                               "data": {
                                 "mock-secret-key1": "mock-secret-value1",
                                 "mock-secret-key2": "mock-secret-value2"
                               }
                             }
-                            """)));
+                            """ : """
+                            {
+                              "data": {
+                                "data": {
+                                  "mock-secret-key1": "mock-secret-value1",
+                                  "mock-secret-key2": "mock-secret-value2"
+                                }
+                              }
+                            }
+                            """
+                        )));
     }
 
     private void doWithMockedDesktop(SoftAssertionsProvider.ThrowingRunnable runnable) throws Exception {
