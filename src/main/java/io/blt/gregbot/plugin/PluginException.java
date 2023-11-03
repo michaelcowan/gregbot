@@ -8,11 +8,10 @@
 
 package io.blt.gregbot.plugin;
 
-import jakarta.validation.constraints.NotNull;
-import java.util.Map;
+public class PluginException extends Exception {
 
-public interface Plugin {
-
-    void load(@NotNull Map<String, String> properties) throws PluginException;
+    public PluginException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

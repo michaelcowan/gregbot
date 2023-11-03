@@ -26,24 +26,27 @@ public class VaultOidc implements SecretPlugin {
     private Vault vault;
 
     @Override
-    public void load(Map<String, String> properties)
-            throws IOException, InterruptedException, VaultException, TimeoutException {
+    public void load(Map<String, String> properties) throws SecretException {
         var host = Objects.requireNonNull(properties.get("host"), "must specify 'host' property");
         var engineVersion = Integer.valueOf(properties.getOrDefault("engine", "2"));
 
         var connector = new VaultConnector(host);
 
-        var token = new Oidc(new OidcConfig(), connector)
-                .fetchAuthTokenUsingDesktopBrowse();
+        try {
+            var token = new Oidc(new OidcConfig(), connector)
+                    .fetchAuthTokenUsingDesktopBrowse();
 
-        vault = new Vault(new VaultConfig()
-                .address(host)
-                .engineVersion(engineVersion)
-                .token(token)
-                .build());
+            vault = new Vault(new VaultConfig()
+                    .address(host)
+                    .engineVersion(engineVersion)
+                    .token(token)
+                    .build());
 
-        // Ensure the token is good
-        vault.auth().renewSelf();
+            // Ensure the token is good
+            vault.auth().renewSelf();
+        } catch (IOException | InterruptedException | TimeoutException | VaultException e) {
+            throw new SecretException("Failed to load using properties: " + properties, e);
+        }
     }
 
     @Override
