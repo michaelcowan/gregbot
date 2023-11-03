@@ -29,6 +29,7 @@ public class VaultOidc implements SecretPlugin {
     public void load(Map<String, String> properties)
             throws IOException, InterruptedException, VaultException, TimeoutException {
         var host = Objects.requireNonNull(properties.get("host"), "must specify 'host' property");
+        var engineVersion = Integer.valueOf(properties.getOrDefault("engine", "2"));
 
         var connector = new VaultConnector(host);
 
@@ -37,7 +38,7 @@ public class VaultOidc implements SecretPlugin {
 
         vault = new Vault(new VaultConfig()
                 .address(host)
-                .engineVersion(1)
+                .engineVersion(engineVersion)
                 .token(token)
                 .build());
 
