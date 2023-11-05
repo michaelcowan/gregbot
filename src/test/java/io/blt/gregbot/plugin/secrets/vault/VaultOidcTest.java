@@ -18,12 +18,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.assertj.core.api.SoftAssertionsProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -53,10 +54,18 @@ class VaultOidcTest {
             "host", "http://mock-host"
     );
 
+    @Test
+    void requiredPropertiesShouldReturnSetOfRequiredKeys() {
+        assertThat(new VaultOidc().requiredProperties())
+                .containsExactlyInAnyOrder("host");
+    }
+
+    static Stream<String> loadShouldThrowWhenPropertiesIsMissingKey() {
+        return new VaultOidc().requiredProperties().stream();
+    }
+
     @ParameterizedTest
-    @ValueSource(strings = {
-            "host"
-    })
+    @MethodSource
     void loadShouldThrowWhenPropertiesIsMissingKey(String key) {
         var properties = requiredPropertiesWithout(key);
 
