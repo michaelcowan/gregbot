@@ -104,7 +104,7 @@ class PluginLoaderTest {
     class IdentityPluginInterface {
 
         PluginLoader<?> loader = new PluginLoader<>(IdentityPlugin.class);
-        PluginContext context = new PluginContext();
+        PluginContext context = new PluginContext(new TestableSecretPlugin());
 
         @Test
         void pluginsShouldReturnListOfAllPluginTypes() {

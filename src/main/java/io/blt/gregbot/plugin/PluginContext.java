@@ -8,4 +8,13 @@
 
 package io.blt.gregbot.plugin;
 
-public record PluginContext() { }
+import io.blt.gregbot.plugin.secrets.SecretPlugin;
+
+public record PluginContext(
+        SecretPlugin secretPlugin) {
+
+    public PluginContext() {
+        this(null);
+    }
+
+}
