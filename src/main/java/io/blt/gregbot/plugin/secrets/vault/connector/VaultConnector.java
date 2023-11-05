@@ -9,10 +9,9 @@
 package io.blt.gregbot.plugin.secrets.vault.connector;
 
 import io.blt.gregbot.plugin.connector.Connector;
+import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthResponse;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthUrlRequest;
-import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthUrlResponse;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackRequest;
-import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;
@@ -25,7 +24,7 @@ public class VaultConnector extends Connector {
         super(host);
     }
 
-    public Result<AuthUrlResponse> fetchAuthUrl(AuthUrlRequest authUrlRequest) throws IOException {
+    public Result<AuthResponse> fetchAuthUrl(AuthUrlRequest authUrlRequest) throws IOException {
         var request = HttpRequest.newBuilder()
                 .uri(uriForPath("/v1/auth/" + authUrlRequest.mount() + "/oidc/auth_url"))
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -35,10 +34,10 @@ public class VaultConnector extends Connector {
                         "client_nonce", authUrlRequest.clientNonce())))
                 .build();
 
-        return send(request, AuthUrlResponse.class);
+        return send(request, AuthResponse.class);
     }
 
-    public Result<CallbackResponse> fetchCallback(CallbackRequest callbackRequest) throws IOException {
+    public Result<AuthResponse> fetchCallback(CallbackRequest callbackRequest) throws IOException {
         var uri = new URIBuilder(uriForPath("/v1/auth/" + callbackRequest.mount() + "/oidc/callback"))
                 .addParameter("state", callbackRequest.state())
                 .addParameter("code", callbackRequest.code())
@@ -51,7 +50,7 @@ public class VaultConnector extends Connector {
                 .GET()
                 .build();
 
-        return send(request, CallbackResponse.class);
+        return send(request, AuthResponse.class);
     }
 
 }

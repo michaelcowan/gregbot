@@ -10,10 +10,9 @@ package io.blt.gregbot.plugin.secrets.vault.oidc;
 
 import io.blt.gregbot.plugin.connector.Connector;
 import io.blt.gregbot.plugin.secrets.vault.connector.VaultConnector;
+import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthResponse;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthUrlRequest;
-import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthUrlResponse;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackRequest;
-import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -47,13 +46,13 @@ class OidcTest {
     ArgumentCaptor<AuthUrlRequest> authUrlRequestCaptor;
 
     @Mock
-    Connector.Result<AuthUrlResponse> authUrlResponse;
+    Connector.Result<AuthResponse> authUrlResponse;
 
     @Captor
     ArgumentCaptor<CallbackRequest> callbackRequestCaptor;
 
     @Mock
-    Connector.Result<CallbackResponse> callbackResponse;
+    Connector.Result<AuthResponse> callbackResponse;
 
     final OidcConfig config = OidcConfig.from(Map.of("listenTimeout", "1"));
 
@@ -64,12 +63,12 @@ class OidcTest {
         this.oidc = new Oidc(config, connector);
 
         when(authUrlResponse.getData())
-                .thenReturn(Optional.of(new AuthUrlResponse(
+                .thenReturn(Optional.of(new AuthResponse(
                         null,
                         null,
                         false,
                         0,
-                        new AuthUrlResponse.Data("http://localhost:8250/oidc/callback"),
+                        new AuthResponse.Data("http://localhost:8250/oidc/callback"),
                         null,
                         null,
                         null
@@ -79,8 +78,8 @@ class OidcTest {
                 .thenReturn(authUrlResponse);
 
         lenient().when(callbackResponse.getData())
-                .thenReturn(Optional.of(new CallbackResponse(
-                        new CallbackResponse.Auth("mock-token")
+                .thenReturn(Optional.of(new AuthResponse(null, null, false, 0, null, null, null,
+                        new AuthResponse.Auth("mock-token")
                 )));
 
         lenient().when(connector.fetchCallback(callbackRequestCaptor.capture()))
