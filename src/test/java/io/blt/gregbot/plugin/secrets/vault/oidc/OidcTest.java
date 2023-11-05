@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -31,7 +32,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static io.blt.test.TestUtils.doIgnoreExceptions;
-import static io.blt.util.Obj.poke;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.lenient;
@@ -55,7 +55,7 @@ class OidcTest {
     @Mock
     Connector.Result<CallbackResponse> callbackResponse;
 
-    OidcConfig config = poke(new OidcConfig(), c -> c.setListenTimeout(1));
+    OidcConfig config = OidcConfig.from(Map.of("listenTimeout", "1"));
 
     Oidc oidc;
 

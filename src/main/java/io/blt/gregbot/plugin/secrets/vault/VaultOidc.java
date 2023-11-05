@@ -33,7 +33,7 @@ public class VaultOidc implements SecretPlugin {
         var connector = new VaultConnector(host);
 
         try {
-            var token = new Oidc(new OidcConfig(), connector)
+            var token = new Oidc(OidcConfig.from(properties), connector)
                     .fetchAuthTokenUsingDesktopBrowse();
 
             vault = new Vault(new VaultConfig()
