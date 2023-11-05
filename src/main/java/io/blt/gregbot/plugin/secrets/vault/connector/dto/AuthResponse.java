@@ -16,7 +16,20 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record CallbackResponse(Auth auth) {
+public record AuthResponse(
+        String requestId,
+        String leaseId,
+        boolean renewable,
+        int leastDuration,
+        Data data,
+        Object wrapInfo,
+        Object warnings,
+        Auth auth) {
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public record Data(String authUrl) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

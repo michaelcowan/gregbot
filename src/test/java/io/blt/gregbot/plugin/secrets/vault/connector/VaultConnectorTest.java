@@ -9,10 +9,9 @@
 package io.blt.gregbot.plugin.secrets.vault.connector;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthResponse;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthUrlRequest;
-import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthUrlResponse;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackRequest;
-import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackResponse;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import org.junit.jupiter.api.Test;
@@ -58,13 +57,13 @@ class VaultConnectorTest {
                 .isEqualTo(200);
 
         assertThat(result.getData())
-                .containsInstanceOf(AuthUrlResponse.class)
+                .containsInstanceOf(AuthResponse.class)
                 .get()
                 .extracting(
-                        AuthUrlResponse::requestId,
-                        AuthUrlResponse::leaseId,
-                        AuthUrlResponse::renewable,
-                        AuthUrlResponse::leastDuration,
+                        AuthResponse::requestId,
+                        AuthResponse::leaseId,
+                        AuthResponse::renewable,
+                        AuthResponse::leastDuration,
                         r -> r.data().authUrl())
                 .containsExactly(
                         "mock-request-id",
@@ -103,7 +102,7 @@ class VaultConnectorTest {
                 .isEqualTo(200);
 
         assertThat(result.getData())
-                .containsInstanceOf(CallbackResponse.class)
+                .containsInstanceOf(AuthResponse.class)
                 .get()
                 .extracting(r -> r.auth().clientToken())
                 .isEqualTo("mock-client-token");

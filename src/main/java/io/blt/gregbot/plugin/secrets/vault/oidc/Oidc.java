@@ -9,10 +9,9 @@
 package io.blt.gregbot.plugin.secrets.vault.oidc;
 
 import io.blt.gregbot.plugin.secrets.vault.connector.VaultConnector;
+import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthResponse;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthUrlRequest;
-import io.blt.gregbot.plugin.secrets.vault.connector.dto.AuthUrlResponse;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackRequest;
-import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackResponse;
 import io.blt.util.functional.ThrowingConsumer;
 import java.awt.Desktop;
 import java.io.IOException;
@@ -56,8 +55,8 @@ public class Oidc {
                         nonce));
 
         return result.getData()
-                .map(AuthUrlResponse::data)
-                .map(AuthUrlResponse.Data::authUrl)
+                .map(AuthResponse::data)
+                .map(AuthResponse.Data::authUrl)
                 .orElseThrow(() -> new IllegalStateException("Failed to fetch Vault auth URL"));
     }
 
@@ -87,8 +86,8 @@ public class Oidc {
             ));
 
             token.set(result.getData()
-                    .map(CallbackResponse::auth)
-                    .map(CallbackResponse.Auth::clientToken)
+                    .map(AuthResponse::auth)
+                    .map(AuthResponse.Auth::clientToken)
                     .orElseThrow());
         });
 
