@@ -70,14 +70,14 @@ class VaultOidcTest {
         var properties = requiredPropertiesWithout(key);
 
         assertThatNullPointerException()
-                .isThrownBy(() -> new VaultOidc().load(properties));
+                .isThrownBy(() -> new VaultOidc().load(null, properties));
     }
 
     @Test
     void loadShouldNotThrowWhenPropertiesArePresent() throws Exception {
         mockVault();
 
-        doWithMockedDesktop(() -> new VaultOidc().load(requiredProperties));
+        doWithMockedDesktop(() -> new VaultOidc().load(null, requiredProperties));
     }
 
     @ParameterizedTest
@@ -88,7 +88,7 @@ class VaultOidcTest {
         var properties = requiredPropertiesWith(key, value);
 
         assertThatException()
-                .isThrownBy(() -> new VaultOidc().load(properties))
+                .isThrownBy(() -> new VaultOidc().load(null, properties))
                 .withMessageContaining(value);
     }
 
@@ -99,7 +99,7 @@ class VaultOidcTest {
         var properties = requiredPropertiesWith("listenPort", "8251");
 
         assertThatExceptionOfType(SecretException.class)
-                .isThrownBy(() -> doWithMockedDesktop(() -> new VaultOidc().load(properties)))
+                .isThrownBy(() -> doWithMockedDesktop(() -> new VaultOidc().load(null, properties)))
                 .withMessageContaining("Failed to load using properties: {host=http://mock-host, listenPort=8251}");
     }
 
@@ -108,7 +108,7 @@ class VaultOidcTest {
         mockVault();
 
         var plugin = new VaultOidc();
-        doWithMockedDesktop(() -> plugin.load(requiredProperties));
+        doWithMockedDesktop(() -> plugin.load(null, requiredProperties));
 
         var result = plugin.secretsForPath("mock/path");
 
@@ -126,7 +126,7 @@ class VaultOidcTest {
         var properties = requiredPropertiesWith("engine", "2");
 
         var plugin = new VaultOidc();
-        doWithMockedDesktop(() -> plugin.load(properties));
+        doWithMockedDesktop(() -> plugin.load(null, properties));
 
         var result = plugin.secretsForPath("mock/path");
 
@@ -144,7 +144,7 @@ class VaultOidcTest {
         var properties = requiredPropertiesWith("engine", "1");
 
         var plugin = new VaultOidc();
-        doWithMockedDesktop(() -> plugin.load(properties));
+        doWithMockedDesktop(() -> plugin.load(null, properties));
 
         var result = plugin.secretsForPath("mock/path");
 

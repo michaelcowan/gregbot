@@ -10,6 +10,7 @@ package io.blt.gregbot.core.plugin;
 
 import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.plugin.Plugin;
+import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.util.Obj;
 import java.util.List;
@@ -28,7 +29,11 @@ public class PluginLoader<T extends Plugin> {
     }
 
     public T load(Properties.Plugin plugin) throws PluginException {
-        return Obj.poke(findPluginOrThrow(plugin), p -> p.load(plugin.properties()));
+        return load(new PluginContext(), plugin);
+    }
+
+    public T load(PluginContext context, Properties.Plugin plugin) throws PluginException {
+        return Obj.poke(findPluginOrThrow(plugin), p -> p.load(context, plugin.properties()));
     }
 
     public List<String> plugins() {

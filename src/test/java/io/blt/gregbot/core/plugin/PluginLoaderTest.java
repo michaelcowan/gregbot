@@ -10,6 +10,7 @@ package io.blt.gregbot.core.plugin;
 
 import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.plugin.Plugin;
+import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import java.util.Map;
@@ -58,11 +59,24 @@ class PluginLoaderTest {
             var properties = Map.of("mock-key", "mock-value");
             var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
 
-            var loadedProperties = ((TestableSecretPlugin) loader.load(plugin))
-                    .loadedProperties();
+            var result = ((TestableSecretPlugin) loader.load(plugin));
 
-            assertThat(loadedProperties)
+            assertThat(result.loadedProperties())
                     .containsExactlyEntriesOf(properties);
+        }
+
+        @Test
+        void loadShouldCallSecretPluginLoadPassingPropertiesAndContext() throws PluginException {
+            var properties = Map.of("mock-key", "mock-value");
+            var context = new PluginContext();
+            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
+
+            var result = ((TestableSecretPlugin) loader.load(context, plugin));
+
+            assertThat(result.loadedProperties())
+                    .containsExactlyEntriesOf(properties);
+            assertThat(result.loadedContext())
+                    .isSameAs(context);
         }
     }
 
