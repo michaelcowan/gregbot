@@ -50,8 +50,8 @@ public class Oidc {
     private String fetchAuthURL(String nonce) throws IOException {
         var result = connector.fetchAuthUrl(
                 new AuthUrlRequest(
-                        config.getMount(),
-                        config.getRole(),
+                        config.mount(),
+                        config.role(),
                         buildRedirectUrl(),
                         nonce));
 
@@ -63,10 +63,10 @@ public class Oidc {
 
     private String buildRedirectUrl() {
         return new URIBuilder()
-                .setScheme(config.getCallbackScheme())
-                .setHost(config.getCallbackHost())
-                .setPort(config.getCallbackPort())
-                .setPath(config.getCallbackPath())
+                .setScheme(config.callbackScheme())
+                .setHost(config.callbackHost())
+                .setPort(config.callbackPort())
+                .setPath(config.callbackPath())
                 .toString();
     }
 
@@ -75,11 +75,11 @@ public class Oidc {
         var token = new AtomicReference<String>();
 
         var listener = new OidcHttpListener(
-                config.getListenHost(),
-                config.getListenPort(),
-                config.getListenPath(), request -> {
+                config.listenHost(),
+                config.listenPort(),
+                config.listenPath(), request -> {
             var result = connector.fetchCallback(new CallbackRequest(
-                    config.getMount(),
+                    config.mount(),
                     request.state(),
                     request.code(),
                     request.idToken(),
@@ -94,9 +94,9 @@ public class Oidc {
 
         fetchAuth.accept(URI.create(authUrl));
 
-        if (!listener.await(config.getListenTimeout())) {
+        if (!listener.await(config.listenTimeout())) {
             throw new TimeoutException(
-                    "Timeout of " + config.getListenTimeout() + " seconds expired while waiting for callback");
+                    "Timeout of " + config.listenTimeout() + " seconds expired while waiting for callback");
         }
 
         return token.get();

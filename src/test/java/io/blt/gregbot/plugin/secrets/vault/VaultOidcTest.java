@@ -9,6 +9,7 @@
 package io.blt.gregbot.plugin.secrets.vault;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import io.blt.gregbot.plugin.secrets.SecretException;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -35,6 +36,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.ArgumentMatchers.any;
@@ -79,6 +81,17 @@ class VaultOidcTest {
         assertThatException()
                 .isThrownBy(() -> new VaultOidc().load(properties))
                 .withMessageContaining(value);
+    }
+
+    @Test
+    void loadShouldUsePropertiesWhenConfiguringOidc() {
+        mockVault();
+
+        var properties = requiredPropertiesWith("listenPort", "8251");
+
+        assertThatExceptionOfType(SecretException.class)
+                .isThrownBy(() -> doWithMockedDesktop(() -> new VaultOidc().load(properties)))
+                .withMessageContaining("Failed to load using properties: {host=http://mock-host, listenPort=8251}");
     }
 
     @Test
