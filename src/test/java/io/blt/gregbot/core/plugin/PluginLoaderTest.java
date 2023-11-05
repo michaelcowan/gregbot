@@ -12,6 +12,7 @@ import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.plugin.Plugin;
 import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
+import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
@@ -72,6 +73,56 @@ class PluginLoaderTest {
             var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
 
             var result = ((TestableSecretPlugin) loader.load(context, plugin));
+
+            assertThat(result.loadedProperties())
+                    .containsExactlyEntriesOf(properties);
+            assertThat(result.loadedContext())
+                    .isSameAs(context);
+        }
+    }
+
+    @Nested
+    class IdentityPluginInterface {
+
+        PluginLoader<?> loader = new PluginLoader<>(IdentityPlugin.class);
+        PluginContext context = new PluginContext();
+
+        @Test
+        void pluginsShouldReturnListOfAllPluginTypes() {
+            var plugins = loader.plugins();
+
+            assertThat(plugins)
+                    .isNotEmpty()
+                    .contains(TestableIdentityPlugin.TYPE);
+        }
+
+        @Test
+        void loadShouldReturnInstanceOfIdentityPlugin() throws PluginException {
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, Map.of());
+
+            var result = loader.load(context, plugin);
+
+            assertThat(result)
+                    .isInstanceOf(IdentityPlugin.class);
+        }
+
+        @Test
+        void loadShouldCallIdentityPluginLoadPassingProperties() throws PluginException {
+            var properties = Map.of("mock-key", "mock-value");
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, properties);
+
+            var result = ((TestableIdentityPlugin) loader.load(context, plugin));
+
+            assertThat(result.loadedProperties())
+                    .containsExactlyEntriesOf(properties);
+        }
+
+        @Test
+        void loadShouldCallIdentityPluginLoadPassingContext() throws PluginException {
+            var properties = Map.of("mock-key", "mock-value");
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, properties);
+
+            var result = ((TestableIdentityPlugin) loader.load(context, plugin));
 
             assertThat(result.loadedProperties())
                     .containsExactlyEntriesOf(properties);
