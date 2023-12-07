@@ -50,7 +50,7 @@
         <commons-lang3.version>3.13.0</commons-lang3.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <httpcore5.version>5.2.4</httpcore5.version>
-        <jackson.version>2.15.3</jackson.version>
+        <jackson.version>2.16.0</jackson.version>
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
         <junit.version>5.10.0</junit.version>
         <mockito.version>5.8.0</mockito.version>
