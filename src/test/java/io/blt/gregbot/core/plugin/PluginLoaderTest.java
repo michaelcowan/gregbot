@@ -15,10 +15,12 @@ import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class PluginLoaderTest {
 
@@ -79,6 +81,23 @@ class PluginLoaderTest {
             assertThat(result.loadedContext())
                     .isSameAs(context);
         }
+
+        @Test
+        void loadShouldThrowWhenPluginTypeCannotBeFound() {
+            var plugin = new Properties.Plugin("UnknownType", Map.of());
+
+            assertThatExceptionOfType(NoSuchElementException.class)
+                    .isThrownBy(() -> loader.load(plugin));
+        }
+
+        @Test
+        void loadShouldThrowWhenPluginLoadThrows() {
+            var plugin = new Properties.Plugin(ThrowOnLoadSecretPlugin.TYPE, Map.of());
+
+            assertThatExceptionOfType(PluginException.class)
+                    .isThrownBy(() -> loader.load(plugin))
+                    .withMessage("secret plugin test load exception");
+        }
     }
 
     @Nested
@@ -128,6 +147,23 @@ class PluginLoaderTest {
                     .containsExactlyEntriesOf(properties);
             assertThat(result.loadedContext())
                     .isSameAs(context);
+        }
+
+        @Test
+        void loadShouldThrowWhenPluginTypeCannotBeFound() {
+            var plugin = new Properties.Plugin("UnknownType", Map.of());
+
+            assertThatExceptionOfType(NoSuchElementException.class)
+                    .isThrownBy(() -> loader.load(plugin));
+        }
+
+        @Test
+        void loadShouldThrowWhenPluginLoadThrows() {
+            var plugin = new Properties.Plugin(ThrowOnLoadIdentityPlugin.TYPE, Map.of());
+
+            assertThatExceptionOfType(PluginException.class)
+                    .isThrownBy(() -> loader.load(plugin))
+                    .withMessage("identity plugin test load exception");
         }
     }
 
