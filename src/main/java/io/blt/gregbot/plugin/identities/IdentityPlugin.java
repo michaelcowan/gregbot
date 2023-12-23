@@ -6,16 +6,13 @@
  * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package io.blt.gregbot.plugin;
+package io.blt.gregbot.plugin.identities;
 
-import jakarta.validation.constraints.NotNull;
+import io.blt.gregbot.plugin.Plugin;
 import java.util.Map;
-import java.util.Set;
 
-public interface Plugin {
+public interface IdentityPlugin extends Plugin {
 
-    Set<String> requiredProperties();
-
-    void load(@NotNull PluginContext context, @NotNull Map<String, String> properties) throws PluginException;
+    Map<String, String> variables() throws IdentityException;
 
 }

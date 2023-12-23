@@ -8,14 +8,13 @@
 
 package io.blt.gregbot.plugin;
 
-import jakarta.validation.constraints.NotNull;
-import java.util.Map;
-import java.util.Set;
+import io.blt.gregbot.plugin.secrets.SecretPlugin;
 
-public interface Plugin {
+public record PluginContext(
+        SecretPlugin secretPlugin) {
 
-    Set<String> requiredProperties();
-
-    void load(@NotNull PluginContext context, @NotNull Map<String, String> properties) throws PluginException;
+    public PluginContext() {
+        this(null);
+    }
 
 }

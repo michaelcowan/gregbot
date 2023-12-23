@@ -8,16 +8,21 @@
 
 package io.blt.gregbot.core.plugin;
 
+import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.plugin.Plugin;
+import io.blt.gregbot.plugin.PluginContext;
+import io.blt.gregbot.plugin.PluginException;
+import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class PluginLoaderTest {
-
-    interface InterfaceWithNoImplementations extends Plugin { }
 
     @Test
     void pluginsShouldReturnEmptyForInterfaceWithNoImplementations() {
@@ -31,17 +36,137 @@ class PluginLoaderTest {
     @Nested
     class SecretPluginInterface {
 
+        PluginLoader<?> loader = new PluginLoader<>(SecretPlugin.class);
+
         @Test
         void pluginsShouldReturnListOfAllPluginTypes() {
-            var plugins = new PluginLoader<>(SecretPlugin.class)
-                    .plugins();
+            var plugins = loader.plugins();
 
             assertThat(plugins)
                     .isNotEmpty()
-                    .containsExactlyInAnyOrder(
-                            "io.blt.gregbot.plugin.secrets.vault.VaultOidc"
-                    );
+                    .contains(TestableSecretPlugin.TYPE);
+        }
+
+        @Test
+        void loadShouldReturnInstanceOfSecretPlugin() throws PluginException {
+            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, Map.of());
+
+            var result = loader.load(plugin);
+
+            assertThat(result)
+                    .isInstanceOf(SecretPlugin.class);
+        }
+
+        @Test
+        void loadShouldCallSecretPluginLoadPassingProperties() throws PluginException {
+            var properties = Map.of("mock-key", "mock-value");
+            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
+
+            var result = ((TestableSecretPlugin) loader.load(plugin));
+
+            assertThat(result.loadedProperties())
+                    .containsExactlyEntriesOf(properties);
+        }
+
+        @Test
+        void loadShouldCallSecretPluginLoadPassingPropertiesAndContext() throws PluginException {
+            var properties = Map.of("mock-key", "mock-value");
+            var context = new PluginContext();
+            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
+
+            var result = ((TestableSecretPlugin) loader.load(context, plugin));
+
+            assertThat(result.loadedProperties())
+                    .containsExactlyEntriesOf(properties);
+            assertThat(result.loadedContext())
+                    .isSameAs(context);
+        }
+
+        @Test
+        void loadShouldThrowWhenPluginTypeCannotBeFound() {
+            var plugin = new Properties.Plugin("UnknownType", Map.of());
+
+            assertThatExceptionOfType(NoSuchElementException.class)
+                    .isThrownBy(() -> loader.load(plugin));
+        }
+
+        @Test
+        void loadShouldThrowWhenPluginLoadThrows() {
+            var plugin = new Properties.Plugin(ThrowOnLoadSecretPlugin.TYPE, Map.of());
+
+            assertThatExceptionOfType(PluginException.class)
+                    .isThrownBy(() -> loader.load(plugin))
+                    .withMessage("secret plugin test load exception");
         }
     }
+
+    @Nested
+    class IdentityPluginInterface {
+
+        PluginLoader<?> loader = new PluginLoader<>(IdentityPlugin.class);
+        PluginContext context = new PluginContext(new TestableSecretPlugin());
+
+        @Test
+        void pluginsShouldReturnListOfAllPluginTypes() {
+            var plugins = loader.plugins();
+
+            assertThat(plugins)
+                    .isNotEmpty()
+                    .contains(TestableIdentityPlugin.TYPE);
+        }
+
+        @Test
+        void loadShouldReturnInstanceOfIdentityPlugin() throws PluginException {
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, Map.of());
+
+            var result = loader.load(context, plugin);
+
+            assertThat(result)
+                    .isInstanceOf(IdentityPlugin.class);
+        }
+
+        @Test
+        void loadShouldCallIdentityPluginLoadPassingProperties() throws PluginException {
+            var properties = Map.of("mock-key", "mock-value");
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, properties);
+
+            var result = ((TestableIdentityPlugin) loader.load(context, plugin));
+
+            assertThat(result.loadedProperties())
+                    .containsExactlyEntriesOf(properties);
+        }
+
+        @Test
+        void loadShouldCallIdentityPluginLoadPassingContext() throws PluginException {
+            var properties = Map.of("mock-key", "mock-value");
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, properties);
+
+            var result = ((TestableIdentityPlugin) loader.load(context, plugin));
+
+            assertThat(result.loadedProperties())
+                    .containsExactlyEntriesOf(properties);
+            assertThat(result.loadedContext())
+                    .isSameAs(context);
+        }
+
+        @Test
+        void loadShouldThrowWhenPluginTypeCannotBeFound() {
+            var plugin = new Properties.Plugin("UnknownType", Map.of());
+
+            assertThatExceptionOfType(NoSuchElementException.class)
+                    .isThrownBy(() -> loader.load(plugin));
+        }
+
+        @Test
+        void loadShouldThrowWhenPluginLoadThrows() {
+            var plugin = new Properties.Plugin(ThrowOnLoadIdentityPlugin.TYPE, Map.of());
+
+            assertThatExceptionOfType(PluginException.class)
+                    .isThrownBy(() -> loader.load(plugin))
+                    .withMessage("identity plugin test load exception");
+        }
+    }
+
+    interface InterfaceWithNoImplementations extends Plugin {}
 
 }
