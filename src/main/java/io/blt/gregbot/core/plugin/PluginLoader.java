@@ -14,10 +14,14 @@ import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.util.Obj;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
 
 import static io.blt.util.stream.SingletonCollectors.toOptional;
 
+/**
+ * A facility to load implementations of {@code Plugin}.
+ */
 public class PluginLoader<T extends Plugin> {
 
     private final List<T> plugins;
@@ -28,14 +32,36 @@ public class PluginLoader<T extends Plugin> {
                 .toList();
     }
 
+    /**
+     * Loads an implementation of {@code Plugin} matching the provided plugin properties.
+     *
+     * @param plugin the plugin properties
+     * @return loaded plugin instance
+     * @throws PluginException        if there is an error loading the plugin
+     * @throws NoSuchElementException if no plugin matches the properties
+     */
     public T load(Properties.Plugin plugin) throws PluginException {
         return load(new PluginContext(), plugin);
     }
 
+    /**
+     * Loads an implementation of {@code Plugin} matching the provided plugin properties.
+     *
+     * @param context the plugin context
+     * @param plugin  the plugin properties
+     * @return loaded plugin instance
+     * @throws PluginException        if there is an error loading the plugin
+     * @throws NoSuchElementException if no plugin matches the properties
+     */
     public T load(PluginContext context, Properties.Plugin plugin) throws PluginException {
         return Obj.poke(findPluginOrThrow(plugin), p -> p.load(context, plugin.properties()));
     }
 
+    /**
+     * Returns a list of all plugin types loaded by {@code PluginLoader}.
+     *
+     * @return list of plugin types
+     */
     public List<String> plugins() {
         return plugins.stream()
                 .map(this::pluginType)
