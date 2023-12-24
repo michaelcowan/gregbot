@@ -11,7 +11,6 @@ package io.blt.gregbot.core.services;
 import io.blt.gregbot.core.plugin.PluginLoader;
 import io.blt.gregbot.core.properties.Properties.Identity;
 import io.blt.gregbot.core.properties.Properties.Secret;
-import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
@@ -56,7 +55,7 @@ public class IdentityService {
         var loader = new PluginLoader<>(IdentityPlugin.class);
         return Ctr.transformValues(identities, i -> {
             var secretPlugin = nonNull(i.secrets()) ? findSecretPlugin(i.secrets()) : null;
-            return loader.load(new PluginContext(secretPlugin), i.plugin());
+            return loader.load(i.plugin());
         });
     }
 

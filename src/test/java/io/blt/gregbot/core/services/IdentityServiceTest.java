@@ -15,7 +15,6 @@ import io.blt.gregbot.core.plugin.ThrowOnLoadSecretPlugin;
 import io.blt.gregbot.core.properties.Properties.Identity;
 import io.blt.gregbot.core.properties.Properties.Plugin;
 import io.blt.gregbot.core.properties.Properties.Secret;
-import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -39,11 +38,7 @@ class IdentityServiceTest {
 
         assertThat(result)
                 .isNotEmpty().get()
-                .isInstanceOfSatisfying(TestableIdentityPlugin.class, plugin ->
-                        assertThat(plugin)
-                                .extracting(TestableIdentityPlugin::loadedContext)
-                                .extracting(PluginContext::secretPlugin)
-                                .isNull());
+                .isInstanceOf(TestableIdentityPlugin.class);
     }
 
     @Test
@@ -59,11 +54,6 @@ class IdentityServiceTest {
 
         assertThat(result)
                 .isNotEmpty().get()
-                .isInstanceOfSatisfying(TestableIdentityPlugin.class, plugin ->
-                        assertThat(plugin)
-                                .extracting(TestableIdentityPlugin::loadedContext)
-                                .extracting(PluginContext::secretPlugin)
-                                .isInstanceOf(TestableSecretPlugin.class));
     }
 
     @Test

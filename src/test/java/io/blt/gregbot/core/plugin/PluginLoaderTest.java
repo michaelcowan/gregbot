@@ -10,7 +10,6 @@ package io.blt.gregbot.core.plugin;
 
 import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.plugin.Plugin;
-import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
@@ -69,20 +68,6 @@ class PluginLoaderTest {
         }
 
         @Test
-        void loadShouldCallSecretPluginLoadPassingPropertiesAndContext() throws PluginException {
-            var properties = Map.of("mock-key", "mock-value");
-            var context = new PluginContext();
-            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
-
-            var result = ((TestableSecretPlugin) loader.load(context, plugin));
-
-            assertThat(result.loadedProperties())
-                    .containsExactlyEntriesOf(properties);
-            assertThat(result.loadedContext())
-                    .isSameAs(context);
-        }
-
-        @Test
         void loadShouldThrowWhenPluginTypeCannotBeFound() {
             var plugin = new Properties.Plugin("UnknownType", Map.of());
 
@@ -104,7 +89,6 @@ class PluginLoaderTest {
     class IdentityPluginInterface {
 
         PluginLoader<?> loader = new PluginLoader<>(IdentityPlugin.class);
-        PluginContext context = new PluginContext(new TestableSecretPlugin());
 
         @Test
         void pluginsShouldReturnListOfAllPluginTypes() {
@@ -119,7 +103,7 @@ class PluginLoaderTest {
         void loadShouldReturnInstanceOfIdentityPlugin() throws PluginException {
             var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, Map.of());
 
-            var result = loader.load(context, plugin);
+            var result = loader.load(plugin);
 
             assertThat(result)
                     .isInstanceOf(IdentityPlugin.class);
@@ -130,23 +114,10 @@ class PluginLoaderTest {
             var properties = Map.of("mock-key", "mock-value");
             var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, properties);
 
-            var result = ((TestableIdentityPlugin) loader.load(context, plugin));
+            var result = ((TestableIdentityPlugin) loader.load(plugin));
 
             assertThat(result.loadedProperties())
                     .containsExactlyEntriesOf(properties);
-        }
-
-        @Test
-        void loadShouldCallIdentityPluginLoadPassingContext() throws PluginException {
-            var properties = Map.of("mock-key", "mock-value");
-            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, properties);
-
-            var result = ((TestableIdentityPlugin) loader.load(context, plugin));
-
-            assertThat(result.loadedProperties())
-                    .containsExactlyEntriesOf(properties);
-            assertThat(result.loadedContext())
-                    .isSameAs(context);
         }
 
         @Test

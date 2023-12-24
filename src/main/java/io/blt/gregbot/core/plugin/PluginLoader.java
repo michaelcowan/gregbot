@@ -10,7 +10,6 @@ package io.blt.gregbot.core.plugin;
 
 import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.plugin.Plugin;
-import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.util.Obj;
 import java.util.List;
@@ -41,20 +40,7 @@ public class PluginLoader<T extends Plugin> {
      * @throws NoSuchElementException if no plugin matches the properties
      */
     public T load(Properties.Plugin plugin) throws PluginException {
-        return load(new PluginContext(), plugin);
-    }
-
-    /**
-     * Loads an implementation of {@code Plugin} matching the provided plugin properties.
-     *
-     * @param context the plugin context
-     * @param plugin  the plugin properties
-     * @return loaded plugin instance
-     * @throws PluginException        if there is an error loading the plugin
-     * @throws NoSuchElementException if no plugin matches the properties
-     */
-    public T load(PluginContext context, Properties.Plugin plugin) throws PluginException {
-        return Obj.poke(findPluginOrThrow(plugin), p -> p.load(context, plugin.properties()));
+        return Obj.poke(findPluginOrThrow(plugin), p -> p.load(plugin.properties()));
     }
 
     /**
