@@ -31,7 +31,7 @@ public class TestableSecretPlugin implements SecretPlugin {
 
     @Override
     public Map<String, String> secretsForPath(String path) {
-        return null;
+        return Map.of("test-secret", path + "-test-value");
     }
 
     public Map<String, String> loadedProperties() {

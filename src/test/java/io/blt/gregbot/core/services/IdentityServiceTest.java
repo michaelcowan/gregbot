@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 class IdentityServiceTest {
 
     @Test
-    void shouldLoadAndFindIdentityPluginWithoutSecretPlugin() throws PluginException {
+    void shouldLoadAndFindIdentityPluginWithoutSecretPlugin() throws IdentityServiceException {
         var service = new IdentityService(
                 Map.of("SecretPlugin", new Secret(
                         new Plugin(TestableSecretPlugin.class.getName(), Map.of()))),
@@ -42,7 +42,7 @@ class IdentityServiceTest {
     }
 
     @Test
-    void shouldLoadAndFindIdentityPluginWithSecretPlugin() throws PluginException {
+    void shouldLoadAndFindIdentityPluginWithSecretPlugin() throws IdentityServiceException {
         var service = new IdentityService(
                 Map.of("SecretPlugin", new Secret(
                         new Plugin(TestableSecretPlugin.class.getName(), Map.of()))),
@@ -54,10 +54,27 @@ class IdentityServiceTest {
 
         assertThat(result)
                 .isNotEmpty().get()
+                .isInstanceOf(TestableIdentityPlugin.class);
     }
 
     @Test
-    void findShouldReturnEmptyWhenSpecifiedIdentityDoesNotExist() throws PluginException {
+    void shouldRenderSecret() throws IdentityServiceException {
+        var service = new IdentityService(
+                Map.of("SecretPlugin", new Secret(
+                        new Plugin(TestableSecretPlugin.class.getName(), Map.of()))),
+                Map.of("IdentityPlugin", new Identity(
+                        null, "SecretPlugin", Map.of(),
+                        new Plugin(TestableIdentityPlugin.class.getName(),
+                                Map.of("secret", "[my/secret/path/test-secret]")))));
+
+        var result = (TestableIdentityPlugin) service.find("IdentityPlugin").get();
+
+        assertThat(result.loadedProperties())
+                .containsEntry("secret", "my/secret/path-test-value");
+    }
+
+    @Test
+    void findShouldReturnEmptyWhenSpecifiedIdentityDoesNotExist() throws IdentityServiceException {
         var service = new IdentityService(Map.of(), Map.of());
 
         var result = service.find("DoesNotExist");
@@ -79,25 +96,29 @@ class IdentityServiceTest {
     }
 
     @Test
-    void shouldBubbleUpPluginExceptionFromIdentityPlugin() {
-        assertThatExceptionOfType(PluginException.class)
+    void shouldRaiseExceptionWhenIdentityPluginThrows() {
+        assertThatExceptionOfType(IdentityServiceException.class)
                 .isThrownBy(() -> new IdentityService(
                         Map.of(),
                         Map.of("IdentityPlugin", new Identity(
                                 null, null, Map.of(),
                                 new Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of())))))
+                .havingCause()
+                .isInstanceOf(PluginException.class)
                 .withMessage("identity plugin test load exception");
     }
 
     @Test
-    void shouldBubbleUpPluginExceptionFromSecretPlugin() {
-        assertThatExceptionOfType(PluginException.class)
+    void shouldRaiseExceptionWhenSecretPluginThrows() {
+        assertThatExceptionOfType(IdentityServiceException.class)
                 .isThrownBy(() -> new IdentityService(
                         Map.of("SecretPlugin", new Secret(
                                 new Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of()))),
                         Map.of("IdentityPlugin", new Identity(
                                 null, "SecretPlugin", Map.of(),
                                 new Plugin(TestableIdentityPlugin.class.getName(), Map.of())))))
+                .havingCause()
+                .isInstanceOf(PluginException.class)
                 .withMessage("secret plugin test load exception");
     }
 
