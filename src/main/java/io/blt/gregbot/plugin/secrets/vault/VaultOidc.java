@@ -11,7 +11,6 @@ package io.blt.gregbot.plugin.secrets.vault;
 import com.bettercloud.vault.Vault;
 import com.bettercloud.vault.VaultConfig;
 import com.bettercloud.vault.VaultException;
-import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.secrets.SecretException;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import io.blt.gregbot.plugin.secrets.vault.connector.VaultConnector;
@@ -33,7 +32,7 @@ public class VaultOidc implements SecretPlugin {
     }
 
     @Override
-    public void load(PluginContext context, Map<String, String> properties) throws SecretException {
+    public void load(Map<String, String> properties) throws SecretException {
         var host = Objects.requireNonNull(properties.get("host"), "must specify 'host' property");
         var engineVersion = Integer.valueOf(properties.getOrDefault("engine", "2"));
 

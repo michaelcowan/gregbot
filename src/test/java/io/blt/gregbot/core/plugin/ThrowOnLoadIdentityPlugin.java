@@ -8,7 +8,6 @@
 
 package io.blt.gregbot.core.plugin;
 
-import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
@@ -25,7 +24,7 @@ public class ThrowOnLoadIdentityPlugin implements IdentityPlugin {
     }
 
     @Override
-    public void load(PluginContext context, Map<String, String> properties) throws PluginException {
+    public void load(Map<String, String> properties) throws PluginException {
         throw new PluginException("identity plugin test load exception", null);
     }
 

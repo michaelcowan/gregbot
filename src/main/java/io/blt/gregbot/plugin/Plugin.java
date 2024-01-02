@@ -16,6 +16,6 @@ public interface Plugin {
 
     Set<String> requiredProperties();
 
-    void load(@NotNull PluginContext context, @NotNull Map<String, String> properties) throws PluginException;
+    void load(@NotNull Map<String, String> properties) throws PluginException;
 
 }

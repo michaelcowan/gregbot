@@ -9,31 +9,33 @@
 package io.blt.gregbot.core.services;
 
 import io.blt.gregbot.core.plugin.PluginLoader;
+import io.blt.gregbot.core.plugin.SecretRenderException;
+import io.blt.gregbot.core.plugin.SecretRenderer;
+import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.core.properties.Properties.Identity;
 import io.blt.gregbot.core.properties.Properties.Secret;
-import io.blt.gregbot.plugin.PluginContext;
-import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import io.blt.util.Ctr;
+import io.blt.util.Ex;
 import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
- * Manages the loading of identity plugins and any secret plugin dependencies.
+ * Manages the loading of identity plugins.
+ * This includes loading and rendering any secrets.
  */
 public class IdentityService {
 
-    private final Map<String, SecretPlugin> secretPlugins;
+    private final Map<String, SecretRenderer> secretRenderers;
     private final Map<String, IdentityPlugin> identityPlugins;
 
     public IdentityService(
             Map<String, Secret> secrets,
-            Map<String, Identity> identities) throws PluginException {
-        this.secretPlugins = loadSecretPlugins(secrets);
+            Map<String, Identity> identities) throws IdentityServiceException {
+        this.secretRenderers = Ctr.transformValues(loadSecretPlugins(secrets), SecretRenderer::new);
         this.identityPlugins = loadIdentityPlugins(identities);
     }
 
@@ -47,21 +49,34 @@ public class IdentityService {
         return Optional.ofNullable(identityPlugins.get(identity));
     }
 
-    private Map<String, SecretPlugin> loadSecretPlugins(Map<String, Secret> secrets) throws PluginException {
+    private Map<String, SecretPlugin> loadSecretPlugins(Map<String, Secret> secrets)
+            throws IdentityServiceException {
         var loader = new PluginLoader<>(SecretPlugin.class);
-        return Ctr.transformValues(secrets, s -> loader.load(s.plugin()));
+        return Ctr.transformValues(secrets,
+                s -> Ex.transformExceptions(() -> loader.load(s.plugin()), IdentityServiceException::new));
     }
 
-    private Map<String, IdentityPlugin> loadIdentityPlugins(Map<String, Identity> identities) throws PluginException {
+    private Map<String, IdentityPlugin> loadIdentityPlugins(Map<String, Identity> identities)
+            throws IdentityServiceException {
         var loader = new PluginLoader<>(IdentityPlugin.class);
-        return Ctr.transformValues(identities, i -> {
-            var secretPlugin = nonNull(i.secrets()) ? findSecretPlugin(i.secrets()) : null;
-            return loader.load(new PluginContext(secretPlugin), i.plugin());
-        });
+        return Ctr.transformValues(identities,
+                i -> Ex.transformExceptions(() -> loader.load(resolvedPlugin(i)), IdentityServiceException::new));
     }
 
-    private SecretPlugin findSecretPlugin(String name) {
-        var result = secretPlugins.get(name);
+    private Properties.Plugin resolvedPlugin(Identity identity) throws SecretRenderException {
+        if (isNull(identity.secrets())) {
+            return identity.plugin();
+        }
+
+        var secretRenderer = findSecretRenderer(identity.secrets());
+
+        var properties = Ctr.transformValues(identity.plugin().properties(), secretRenderer::render);
+
+        return new Properties.Plugin(identity.plugin().type(), properties);
+    }
+
+    private SecretRenderer findSecretRenderer(String name) {
+        var result = secretRenderers.get(name);
         if (isNull(result)) {
             throw new IllegalArgumentException("Cannot find secret plugin " + name);
         }

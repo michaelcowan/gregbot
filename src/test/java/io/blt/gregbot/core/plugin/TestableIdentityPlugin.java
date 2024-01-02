@@ -8,7 +8,6 @@
 
 package io.blt.gregbot.core.plugin;
 
-import io.blt.gregbot.plugin.PluginContext;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +17,6 @@ public class TestableIdentityPlugin implements IdentityPlugin {
 
     static String TYPE = "io.blt.gregbot.core.plugin.TestableIdentityPlugin";
 
-    private PluginContext loadedContext;
     private final Map<String, String> loadedProperties = new HashMap<>();
 
     @Override
@@ -27,18 +25,13 @@ public class TestableIdentityPlugin implements IdentityPlugin {
     }
 
     @Override
-    public void load(PluginContext context, Map<String, String> properties) {
-        loadedContext = context;
+    public void load(Map<String, String> properties) {
         loadedProperties.putAll(properties);
     }
 
     @Override
     public Map<String, String> variables() {
         return null;
-    }
-
-    public PluginContext loadedContext() {
-        return loadedContext;
     }
 
     public Map<String, String> loadedProperties() {

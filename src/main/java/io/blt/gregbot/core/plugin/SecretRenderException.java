@@ -6,15 +6,15 @@
  * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package io.blt.gregbot.plugin;
+package io.blt.gregbot.core.plugin;
 
-import io.blt.gregbot.plugin.secrets.SecretPlugin;
+public class SecretRenderException extends Exception {
+    public SecretRenderException(String message) {
+        super(message);
+    }
 
-public record PluginContext(
-        SecretPlugin secretPlugin) {
-
-    public PluginContext() {
-        this(null);
+    public SecretRenderException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }
