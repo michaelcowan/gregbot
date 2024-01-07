@@ -9,6 +9,7 @@
 package io.blt.gregbot.plugin.connector;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.blt.util.Ex;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -18,6 +19,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -38,12 +40,16 @@ public class Connector {
         this.host = host.charAt(lastCharIndex) == '/' ? host.substring(0, lastCharIndex) : host;
     }
 
-    public <T> Result<T> send(HttpRequest request) throws IOException, InterruptedException {
-        return send(request, null);
+    public <T> Result<T> send(HttpRequest request) throws IOException {
+        return Ex.transformExceptions(
+                () -> send(request, null),
+                toIoException());
     }
 
-    public <T> Result<T> send(HttpRequest request, Class<T> responseType) throws IOException, InterruptedException {
-        var result = CLIENT.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    public <T> Result<T> send(HttpRequest request, Class<T> responseType) throws IOException {
+        var result = Ex.transformExceptions(
+                () -> CLIENT.send(request, HttpResponse.BodyHandlers.ofByteArray()),
+                toIoException());
         return new Result<>(result, responseType);
     }
 
@@ -63,6 +69,10 @@ public class Connector {
 
     private static String encode(String string) {
         return URLEncoder.encode(string, StandardCharsets.UTF_8);
+    }
+
+    private Function<? super Exception, IOException> toIoException() {
+        return e -> e instanceof IOException ? (IOException) e : new IOException(e);
     }
 
     public static class Result<T> {

@@ -17,6 +17,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -31,6 +33,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
+import static org.assertj.core.api.Assertions.assertThatIOException;
 
 @WireMockTest(proxyMode = true)
 class ConnectorTest {
@@ -44,7 +47,7 @@ class ConnectorTest {
     }
 
     @Test
-    void sendShouldReturnResponseAndEmptyDataForEndpointWithNoBody() throws IOException, InterruptedException {
+    void sendShouldReturnResponseAndEmptyDataForEndpointWithNoBody() throws IOException {
         mockEndpointReturning(ok());
 
         var request = HttpRequest.newBuilder()
@@ -64,7 +67,7 @@ class ConnectorTest {
     }
 
     @Test
-    void sendShouldReturnResponseAndDataForEndpointWithJsonBody() throws IOException, InterruptedException {
+    void sendShouldReturnResponseAndDataForEndpointWithJsonBody() throws IOException {
         mockEndpointReturning(okJson("{ \"name\": \"Greg\" }"));
 
         var request = HttpRequest.newBuilder()
@@ -87,7 +90,7 @@ class ConnectorTest {
     }
 
     @Test
-    void sendShouldReturnResponseAndEmptyDataForEndpointWithUnsupportedBody() throws IOException, InterruptedException {
+    void sendShouldReturnResponseAndEmptyDataForEndpointWithUnsupportedBody() throws IOException {
         mockEndpointReturning(ok("raw text"));
 
         var request = HttpRequest.newBuilder()
@@ -107,7 +110,7 @@ class ConnectorTest {
     }
 
     @Test
-    void sendShouldResponseAndEmptyBodyForEndpointWithBadRequest() throws IOException, InterruptedException {
+    void sendShouldResponseAndEmptyBodyForEndpointWithBadRequest() throws IOException {
         mockEndpointReturning(badRequest());
 
         var request = HttpRequest.newBuilder()
@@ -142,7 +145,7 @@ class ConnectorTest {
     }
 
     @Test
-    void formFromMapShouldGenerateValidFormRequest() throws IOException, InterruptedException {
+    void formFromMapShouldGenerateValidFormRequest() throws IOException {
         mockFormEndpoint(m -> m
                 .withFormParam("player1", equalTo("Greg"))
                 .withFormParam("player2", equalTo("Louis"))
@@ -166,6 +169,39 @@ class ConnectorTest {
         assertThat(result.getResponse())
                 .extracting(HttpResponse::statusCode)
                 .isEqualTo(200);
+    }
+
+    @Nested
+    class WhenInterrupted {
+
+        final Connector connector = new Connector("http://mock");
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://mock.domain/mock/path"))
+                .GET()
+                .build();
+
+        @BeforeEach
+        void beforeEach() {
+            Thread.currentThread().interrupt();
+        }
+
+        @Test
+        void sendShouldBubbleUpInterruptedExceptionAsIOException() {
+            assertThatIOException()
+                    .isThrownBy(() -> connector.send(request))
+                    .havingCause()
+                    .isInstanceOf(InterruptedException.class);
+        }
+
+        @Test
+        void sendWithResponseTypeShouldBubbleUpInterruptedExceptionAsIOException() {
+            assertThatIOException()
+                    .isThrownBy(() -> connector.send(request, Class.class))
+                    .havingCause()
+                    .isInstanceOf(InterruptedException.class);
+        }
+
     }
 
     private void mockEndpointReturning(ResponseDefinitionBuilder responseDefinitionBuilder) {
