@@ -8,6 +8,7 @@
 
 package io.blt.gregbot.plugin.secrets.vault;
 
+import com.bettercloud.vault.VaultException;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.blt.gregbot.plugin.secrets.SecretException;
 import java.awt.*;
@@ -153,6 +154,24 @@ class VaultOidcTest {
                         entry("mock-secret-key1", "mock-secret-value1"),
                         entry("mock-secret-key2", "mock-secret-value2")
                 );
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1", "2"})
+    void secretsForPathShouldBubbleUpVaultExceptionAsSecretException(String engine) throws Exception {
+        mockVault(true);
+
+        var properties = requiredPropertiesWith("engine", engine);
+
+        var plugin = new VaultOidc();
+        doWithMockedDesktop(() -> plugin.load(properties));
+
+        assertThatExceptionOfType(SecretException.class)
+                .isThrownBy(() -> plugin.secretsForPath("mock/server-error"))
+                .withMessage("Failed to fetch a secret for path: mock/server-error")
+                .havingCause()
+                .isInstanceOf(VaultException.class)
+                .withMessageStartingWith("Vault responded with HTTP status code: 500");
     }
 
     private Map<String, String> requiredPropertiesWithout(String key) {
