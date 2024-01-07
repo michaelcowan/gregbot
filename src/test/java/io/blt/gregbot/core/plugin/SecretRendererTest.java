@@ -10,6 +10,7 @@ package io.blt.gregbot.core.plugin;
 
 import io.blt.gregbot.plugin.secrets.SecretException;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -132,6 +133,28 @@ class SecretRendererTest {
         assertThatExceptionOfType(SecretRenderException.class)
                 .isThrownBy(() -> new SecretRenderer(plugin).render("[path/key]"))
                 .withCause(exception);
+    }
+
+    @Test
+    void renderShouldThrowWhenSecretValueIsNull() {
+        var plugin = new SecretPlugin() {
+            @Override
+            public Map<String, String> secretsForPath(String path) {
+                return new HashMap<>();
+            }
+
+            @Override
+            public Set<String> requiredProperties() {
+                return null;
+            }
+
+            @Override
+            public void load(Map<String, String> properties) {}
+        };
+
+        assertThatExceptionOfType(SecretRenderException.class)
+                .isThrownBy(() -> new SecretRenderer(plugin).render("[path/key]"))
+                .withMessage("Context does not contain a value for token : path/key");
     }
 
 }
