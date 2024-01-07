@@ -8,15 +8,22 @@
 
 package io.blt.gregbot.plugin;
 
+import io.blt.gregbot.plugin.utils.PluginUtils;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import static io.blt.gregbot.plugin.utils.PluginUtils.propertiesToType;
+import static io.blt.test.AssertUtils.assertValidUtilityClass;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PluginUtilsTest {
 
     private record TestType(String name, int age, String favouriteFood) {}
+
+    @Test
+    void shouldBeValidUtilityClass() throws NoSuchMethodException {
+        assertValidUtilityClass(PluginUtils.class);
+    }
 
     @Test
     void propertiesToTypeShouldCreateAnInstanceOfTheTargetTypeFromPassedProperties() {
