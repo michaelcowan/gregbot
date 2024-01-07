@@ -15,8 +15,6 @@ import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackRequest;
 import io.blt.gregbot.plugin.secrets.vault.connector.dto.CallbackResponse;
 import java.io.IOException;
 import java.net.http.HttpResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -25,7 +23,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIOException;
 
 @WireMockTest(proxyMode = true)
 class VaultConnectorTest {
@@ -110,38 +107,6 @@ class VaultConnectorTest {
                 .get()
                 .extracting(r -> r.auth().clientToken())
                 .isEqualTo("mock-client-token");
-    }
-
-    @Nested
-    class WhenInterrupted {
-
-        final VaultConnector connector = new VaultConnector("http://mock.vault");
-
-        @BeforeEach
-        void beforeEach() {
-            Thread.currentThread().interrupt();
-        }
-
-        @Test
-        void fetchAuthUrlShouldBubbleUpInterruptedExceptionAsIOException() {
-            var request = new AuthUrlRequest("", "", "", "");
-
-            assertThatIOException()
-                    .isThrownBy(() -> connector.fetchAuthUrl(request))
-                    .havingCause()
-                    .isInstanceOf(InterruptedException.class);
-        }
-
-        @Test
-        void fetchCallbackShouldBubbleUpInterruptedExceptionAsIOException() {
-            var request = new CallbackRequest("", "", "", "", "");
-
-            assertThatIOException()
-                    .isThrownBy(() -> connector.fetchCallback(request))
-                    .havingCause()
-                    .isInstanceOf(InterruptedException.class);
-        }
-
     }
 
 }

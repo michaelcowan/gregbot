@@ -35,11 +35,7 @@ public class VaultConnector extends Connector {
                         "client_nonce", authUrlRequest.clientNonce())))
                 .build();
 
-        try {
-            return send(request, AuthUrlResponse.class);
-        } catch (InterruptedException e) {
-            throw new IOException(e);
-        }
+        return send(request, AuthUrlResponse.class);
     }
 
     public Result<CallbackResponse> fetchCallback(CallbackRequest callbackRequest) throws IOException {
@@ -55,11 +51,7 @@ public class VaultConnector extends Connector {
                 .GET()
                 .build();
 
-        try {
-            return send(request, CallbackResponse.class);
-        } catch (InterruptedException e) {
-            throw new IOException(e);
-        }
+        return send(request, CallbackResponse.class);
     }
 
 }
