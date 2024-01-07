@@ -12,16 +12,10 @@ import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import java.util.Map;
-import java.util.Set;
 
 public class ThrowOnLoadIdentityPlugin implements IdentityPlugin {
     
     static String TYPE = "io.blt.gregbot.core.plugin.ThrowOnLoadIdentityPlugin";
-
-    @Override
-    public Set<String> requiredProperties() {
-        return null;
-    }
 
     @Override
     public void load(Map<String, String> properties) throws PluginException {

@@ -11,16 +11,10 @@ package io.blt.gregbot.core.plugin;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import java.util.Map;
-import java.util.Set;
 
 public class ThrowOnLoadSecretPlugin implements SecretPlugin {
-    
-    static String TYPE = "io.blt.gregbot.core.plugin.ThrowOnLoadSecretPlugin";
 
-    @Override
-    public Set<String> requiredProperties() {
-        return null;
-    }
+    static String TYPE = "io.blt.gregbot.core.plugin.ThrowOnLoadSecretPlugin";
 
     @Override
     public void load(Map<String, String> properties) throws PluginException {
