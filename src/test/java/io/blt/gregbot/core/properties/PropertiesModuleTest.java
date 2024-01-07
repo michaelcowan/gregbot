@@ -12,10 +12,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -150,6 +152,27 @@ class PropertiesModuleTest {
         assertThat(result.list()).isUnmodifiable();
     }
 
+    @Nested
+    class UnsupportedTypes {
+
+        @Test
+        void shouldDeserializeNonNullSetAsSet() throws JsonProcessingException {
+            var result = mapper.readValue("""
+                    {
+                        "set": [
+                            "Sven",
+                            "Greg",
+                            "Phil",
+                            "Louis"
+                        ]
+                    }
+                    """, SetType.class);
+
+            assertThat(result.set()).containsExactly("Sven", "Greg", "Phil", "Louis");
+        }
+
+    }
+
     private List<String> listOfRandomStrings(int listSize) {
         return IntStream.range(0, listSize)
                 .mapToObj(i -> UUID.randomUUID())
@@ -165,9 +188,10 @@ class PropertiesModuleTest {
                 .collect(Collectors.joining(","));
     }
 
-    record MapType(Map<String, String> map) { }
-    record ListType(List<String> list) { }
-    record PojoType(String string) { }
-    record MapTypeWithPojoValueType(Map<String, PojoType> map) { }
+    record MapType(Map<String, String> map) {}
+    record ListType(List<String> list) {}
+    record SetType(Set<String> set) {}
+    record PojoType(String string) {}
+    record MapTypeWithPojoValueType(Map<String, PojoType> map) {}
 
 }
