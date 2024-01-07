@@ -12,7 +12,6 @@ import io.blt.gregbot.plugin.secrets.SecretException;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -47,11 +46,6 @@ class SecretRendererTest {
         @Override
         public Map<String, String> secretsForPath(String path) {
             return secrets.get(path);
-        }
-
-        @Override
-        public Set<String> requiredProperties() {
-            return null;
         }
 
         @Override
@@ -141,11 +135,6 @@ class SecretRendererTest {
             @Override
             public Map<String, String> secretsForPath(String path) {
                 return new HashMap<>();
-            }
-
-            @Override
-            public Set<String> requiredProperties() {
-                return null;
             }
 
             @Override

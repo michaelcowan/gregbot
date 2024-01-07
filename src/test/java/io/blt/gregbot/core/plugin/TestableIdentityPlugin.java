@@ -11,18 +11,12 @@ package io.blt.gregbot.core.plugin;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class TestableIdentityPlugin implements IdentityPlugin {
 
     static String TYPE = "io.blt.gregbot.core.plugin.TestableIdentityPlugin";
 
     private final Map<String, String> loadedProperties = new HashMap<>();
-
-    @Override
-    public Set<String> requiredProperties() {
-        return null;
-    }
 
     @Override
     public void load(Map<String, String> properties) {

@@ -19,17 +19,11 @@ import io.blt.gregbot.plugin.secrets.vault.oidc.OidcConfig;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 public class VaultOidc implements SecretPlugin {
 
     private Vault vault;
-
-    @Override
-    public Set<String> requiredProperties() {
-        return Set.of("host");
-    }
 
     @Override
     public void load(Map<String, String> properties) throws SecretException {
