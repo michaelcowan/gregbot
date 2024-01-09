@@ -23,8 +23,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -66,9 +66,11 @@ class ConnectorTest {
                 .isEmpty();
     }
 
-    @Test
-    void sendShouldReturnResponseAndDataForEndpointWithJsonBody() throws IOException {
-        mockEndpointReturning(okJson("{ \"name\": \"Greg\" }"));
+    @ParameterizedTest
+    @ValueSource(ints = {200, 302, 404, 504})
+    void sendShouldReturnResponseAndDataForEndpointWithJsonBodyAndStatus(int status) throws IOException {
+        mockEndpointReturning(okJson("{ \"name\": \"Greg\" }")
+                .withStatus(status));
 
         var request = HttpRequest.newBuilder()
                 .uri(URI.create("http://mock.domain/mock/path"))
@@ -80,7 +82,7 @@ class ConnectorTest {
 
         assertThat(result.getResponse())
                 .extracting(HttpResponse::statusCode)
-                .isEqualTo(200);
+                .isEqualTo(status);
 
         assertThat(result.getData())
                 .containsInstanceOf(User.class)
@@ -104,26 +106,6 @@ class ConnectorTest {
         assertThat(result.getResponse())
                 .extracting(HttpResponse::statusCode)
                 .isEqualTo(200);
-
-        assertThat(result.getData())
-                .isEmpty();
-    }
-
-    @Test
-    void sendShouldResponseAndEmptyBodyForEndpointWithBadRequest() throws IOException {
-        mockEndpointReturning(badRequest());
-
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create("http://mock.domain/mock/path"))
-                .GET()
-                .build();
-
-        var result = new Connector("not-using-uri-builders")
-                .send(request, null);
-
-        assertThat(result.getResponse())
-                .extracting(HttpResponse::statusCode)
-                .isEqualTo(400);
 
         assertThat(result.getData())
                 .isEmpty();
