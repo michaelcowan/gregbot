@@ -300,10 +300,46 @@ class ConnectorTest {
                     .isFalse();
         }
 
-        Connector.Result<String> buildResultWithStatus(int status) {
-            when(httpResponse.statusCode()).thenReturn(status);
+        @ParameterizedTest
+        @MethodSource("status2xx")
+        void successDataShouldReturnDataWhenStatusIs2xxAndDataIsNotEmpty(int status) {
+            var result = buildResultWithBodyAndStatus("\"test\"", status)
+                    .successData();
 
-            return new Connector.Result<>(httpResponse, null);
+            assertThat(result)
+                    .isNotEmpty()
+                    .contains("test");
+        }
+
+        @ParameterizedTest
+        @MethodSource("status2xx")
+        void successDataShouldReturnEmptyWhenStatusIs2xxAndDataIsEmpty(int status) {
+            var result = buildResultWithBodyAndStatus("", status)
+                    .successData();
+
+            assertThat(result)
+                    .isEmpty();
+        }
+
+        @ParameterizedTest
+        @MethodSource({"status1xx", "status3xx", "status4xx", "status5xx"})
+        void successDataShouldReturnEmptyWhenStatusIsNot2xxAndDataIsNotEmpty(int status) {
+            var result = buildResultWithBodyAndStatus("\"test\"", status)
+                    .successData();
+
+            assertThat(result)
+                    .isEmpty();
+        }
+
+        Connector.Result<String> buildResultWithStatus(int status) {
+            return buildResultWithBodyAndStatus("", status);
+        }
+
+        Connector.Result<String> buildResultWithBodyAndStatus(String body, int status) {
+            when(httpResponse.statusCode()).thenReturn(status);
+            when(httpResponse.body()).thenReturn(body.getBytes());
+
+            return new Connector.Result<>(httpResponse, String.class);
         }
 
         private static Stream<Integer> status1xx() {

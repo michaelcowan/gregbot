@@ -112,6 +112,10 @@ public class Connector {
             return response.statusCode() / 100 == 5;
         }
 
+        public Optional<T> successData() {
+            return is2xxSuccess() ? getData() : Optional.empty();
+        }
+
         private T decodeResponseElseNull(HttpResponse<byte[]> response, Class<T> type) {
             return nonNull(type) ? tryDecodeAsJson(response, type).orElse(null) : null;
         }
