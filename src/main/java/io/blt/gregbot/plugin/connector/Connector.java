@@ -79,7 +79,7 @@ public class Connector {
         private final HttpResponse<byte[]> response;
         private final T data;
 
-        private Result(HttpResponse<byte[]> response, Class<T> type) {
+        protected Result(HttpResponse<byte[]> response, Class<T> type) {
             this.response = response;
             this.data = decodeResponseElseNull(response, type);
         }
@@ -90,6 +90,26 @@ public class Connector {
 
         public Optional<T> getData() {
             return Optional.ofNullable(data);
+        }
+
+        public boolean is1xxInformational() {
+            return response.statusCode() / 100 == 1;
+        }
+
+        public boolean is2xxSuccess() {
+            return response.statusCode() / 100 == 2;
+        }
+
+        public boolean is3xxRedirection() {
+            return response.statusCode() / 100 == 3;
+        }
+
+        public boolean is4xxClientError() {
+            return response.statusCode() / 100 == 4;
+        }
+
+        public boolean is5xxServerError() {
+            return response.statusCode() / 100 == 5;
         }
 
         private T decodeResponseElseNull(HttpResponse<byte[]> response, Class<T> type) {
