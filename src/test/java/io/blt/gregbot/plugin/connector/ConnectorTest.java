@@ -17,14 +17,20 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -34,9 +40,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
 import static org.assertj.core.api.Assertions.assertThatIOException;
+import static org.mockito.Mockito.when;
 
 @WireMockTest(proxyMode = true)
+@ExtendWith(MockitoExtension.class)
 class ConnectorTest {
+
+    @Mock
+    HttpResponse<byte[]> httpResponse;
 
     @ParameterizedTest
     @NullAndEmptySource
@@ -66,9 +77,11 @@ class ConnectorTest {
                 .isEmpty();
     }
 
-    @Test
-    void sendShouldReturnResponseAndDataForEndpointWithJsonBody() throws IOException {
-        mockEndpointReturning(okJson("{ \"name\": \"Greg\" }"));
+    @ParameterizedTest
+    @ValueSource(ints = {200, 302, 404, 504})
+    void sendShouldReturnResponseAndDataForEndpointWithJsonBodyAndStatus(int status) throws IOException {
+        mockEndpointReturning(okJson("{ \"name\": \"Greg\" }")
+                .withStatus(status));
 
         var request = HttpRequest.newBuilder()
                 .uri(URI.create("http://mock.domain/mock/path"))
@@ -80,12 +93,12 @@ class ConnectorTest {
 
         assertThat(result.getResponse())
                 .extracting(HttpResponse::statusCode)
-                .isEqualTo(200);
+                .isEqualTo(status);
 
         assertThat(result.getData())
                 .containsInstanceOf(User.class)
                 .get()
-                .extracting(User::getName)
+                .extracting(User::name)
                 .isEqualTo("Greg");
     }
 
@@ -104,26 +117,6 @@ class ConnectorTest {
         assertThat(result.getResponse())
                 .extracting(HttpResponse::statusCode)
                 .isEqualTo(200);
-
-        assertThat(result.getData())
-                .isEmpty();
-    }
-
-    @Test
-    void sendShouldResponseAndEmptyBodyForEndpointWithBadRequest() throws IOException {
-        mockEndpointReturning(badRequest());
-
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create("http://mock.domain/mock/path"))
-                .GET()
-                .build();
-
-        var result = new Connector("not-using-uri-builders")
-                .send(request, null);
-
-        assertThat(result.getResponse())
-                .extracting(HttpResponse::statusCode)
-                .isEqualTo(400);
 
         assertThat(result.getData())
                 .isEmpty();
@@ -204,6 +197,173 @@ class ConnectorTest {
 
     }
 
+    @Nested
+    class ConnectorResult {
+
+        @ParameterizedTest
+        @MethodSource("status1xx")
+        void is1xxInformationalShouldReturnTrue(int status) {
+            var result = buildResultWithStatus(status)
+                    .is1xxInformational();
+
+            assertThat(result)
+                    .isTrue();
+        }
+
+        @ParameterizedTest
+        @MethodSource({"status2xx", "status3xx", "status4xx", "status5xx"})
+        void is1xxInformationalShouldReturnFalse(int status) {
+            var result = buildResultWithStatus(status)
+                    .is1xxInformational();
+
+            assertThat(result)
+                    .isFalse();
+        }
+
+        @ParameterizedTest
+        @MethodSource("status2xx")
+        void is2xxSuccessShouldReturnTrue(int status) {
+            var result = buildResultWithStatus(status)
+                    .is2xxSuccess();
+
+            assertThat(result)
+                    .isTrue();
+        }
+
+        @ParameterizedTest
+        @MethodSource({"status1xx", "status3xx", "status4xx", "status5xx"})
+        void is2xxSuccessShouldReturnFalse(int status) {
+            var result = buildResultWithStatus(status)
+                    .is2xxSuccess();
+
+            assertThat(result)
+                    .isFalse();
+        }
+
+        @ParameterizedTest
+        @MethodSource("status3xx")
+        void is3xxRedirectionShouldReturnTrue(int status) {
+            var result = buildResultWithStatus(status)
+                    .is3xxRedirection();
+
+            assertThat(result)
+                    .isTrue();
+        }
+
+        @ParameterizedTest
+        @MethodSource({"status1xx", "status2xx", "status4xx", "status5xx"})
+        void is3xxRedirectionShouldReturnFalse(int status) {
+            var result = buildResultWithStatus(status)
+                    .is3xxRedirection();
+
+            assertThat(result)
+                    .isFalse();
+        }
+
+        @ParameterizedTest
+        @MethodSource("status4xx")
+        void is4xxClientErrorShouldReturnTrue(int status) {
+            var result = buildResultWithStatus(status)
+                    .is4xxClientError();
+
+            assertThat(result)
+                    .isTrue();
+        }
+
+        @ParameterizedTest
+        @MethodSource({"status1xx", "status2xx", "status3xx", "status5xx"})
+        void is4xxClientErrorShouldReturnFalse(int status) {
+            var result = buildResultWithStatus(status)
+                    .is4xxClientError();
+
+            assertThat(result)
+                    .isFalse();
+        }
+
+        @ParameterizedTest
+        @MethodSource("status5xx")
+        void is5xxServerErrorShouldReturnTrue(int status) {
+            var result = buildResultWithStatus(status)
+                    .is5xxServerError();
+
+            assertThat(result)
+                    .isTrue();
+        }
+
+        @ParameterizedTest
+        @MethodSource({"status1xx", "status2xx", "status3xx", "status4xx"})
+        void is5xxServerErrorShouldReturnFalse(int status) {
+            var result = buildResultWithStatus(status)
+                    .is5xxServerError();
+
+            assertThat(result)
+                    .isFalse();
+        }
+
+        @ParameterizedTest
+        @MethodSource("status2xx")
+        void successDataShouldReturnDataWhenStatusIs2xxAndDataIsNotEmpty(int status) {
+            var result = buildResultWithBodyAndStatus("\"test\"", status)
+                    .successData();
+
+            assertThat(result)
+                    .isNotEmpty()
+                    .contains("test");
+        }
+
+        @ParameterizedTest
+        @MethodSource("status2xx")
+        void successDataShouldReturnEmptyWhenStatusIs2xxAndDataIsEmpty(int status) {
+            var result = buildResultWithBodyAndStatus("", status)
+                    .successData();
+
+            assertThat(result)
+                    .isEmpty();
+        }
+
+        @ParameterizedTest
+        @MethodSource({"status1xx", "status3xx", "status4xx", "status5xx"})
+        void successDataShouldReturnEmptyWhenStatusIsNot2xxAndDataIsNotEmpty(int status) {
+            var result = buildResultWithBodyAndStatus("\"test\"", status)
+                    .successData();
+
+            assertThat(result)
+                    .isEmpty();
+        }
+
+        Connector.Result<String> buildResultWithStatus(int status) {
+            return buildResultWithBodyAndStatus("", status);
+        }
+
+        Connector.Result<String> buildResultWithBodyAndStatus(String body, int status) {
+            when(httpResponse.statusCode()).thenReturn(status);
+            when(httpResponse.body()).thenReturn(body.getBytes());
+
+            return new Connector.Result<>(httpResponse, String.class);
+        }
+
+        private static Stream<Integer> status1xx() {
+            return IntStream.range(100, 200).boxed();
+        }
+
+        static Stream<Integer> status2xx() {
+            return IntStream.range(200, 300).boxed();
+        }
+
+        static Stream<Integer> status3xx() {
+            return IntStream.range(300, 400).boxed();
+        }
+
+        static Stream<Integer> status4xx() {
+            return IntStream.range(400, 500).boxed();
+        }
+
+        static Stream<Integer> status5xx() {
+            return IntStream.range(500, 600).boxed();
+        }
+
+    }
+
     private void mockEndpointReturning(ResponseDefinitionBuilder responseDefinitionBuilder) {
         stubFor(get("/mock/path")
                 .withHost(equalTo("mock.domain"))
@@ -220,17 +380,6 @@ class ConnectorTest {
         stubFor(builder);
     }
 
-    public static class User {
-        private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
+    record User(String name) {}
 
 }
