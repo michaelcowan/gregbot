@@ -5,7 +5,7 @@ version: 2.1
 executors:
   java17:
     docker:
-      - image: 'cimg/openjdk:17.0'
+      - image: 'cimg/openjdk:17.0.10'
 
 orbs:
   maven: circleci/maven@1.4.1
