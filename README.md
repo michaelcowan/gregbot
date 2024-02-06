@@ -2,7 +2,9 @@
 > REST Client for developers with a focus on [identity](#identity), [secret management](#secret-management) and 
 > [request organisation](#request-organisation)
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/michaelcowan/gregbot/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/michaelcowan/gregbot/tree/master)
+[![CircleCI](https://img.shields.io/circleci/build/github/michaelcowan/gregbot/master.svg)](https://dl.circleci.com/status-badge/redirect/gh/michaelcowan/gregbot/tree/master)
+[![Codecov](https://img.shields.io/codecov/c/github/michaelcowan/gregbot)](https://codecov.io/github/michaelcowan/gregbot)
+[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/michaelcowan/gregbot)](https://www.codefactor.io/repository/github/michaelcowan/gregbot)
 
 ## Identity
 First class identity support by providing:
