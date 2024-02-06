@@ -54,9 +54,11 @@
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.10.0</mockito.version>
-        <surefire-plugin.version>3.2.5</surefire-plugin.version>
         <vault-driver.version>5.1.0</vault-driver.version>
         <wiremock.version>3.0.1</wiremock.version>
+
+        <jacoco-plugin.version>0.8.11</jacoco-plugin.version>
+        <surefire-plugin.version>3.2.5</surefire-plugin.version>
     </properties>
 
     <dependencies>
@@ -147,6 +149,26 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
