@@ -2,17 +2,41 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
+orbs:
+  maven: circleci/maven@1.4.1
+  codecov: codecov/codecov@4.0.1
+
 executors:
   java17:
     docker:
-      - image: 'cimg/openjdk:17.0.10'
+      - image: cimg/openjdk:17.0.10
+  java21:
+    docker:
+      - image: cimg/openjdk:21.0.2
 
-orbs:
-  maven: circleci/maven@1.4.1
+jobs:
+  coverage:
+    executor: java17
+    steps:
+      - checkout
+      - maven/with_cache:
+          steps:
+            - run:
+                name: Run tests to record coverage
+                command: mvn verify
+            - codecov/upload:
+                file: ./target/site/jacoco/jacoco.xml
 
 workflows:
   maven_test:
     jobs:
       - maven/test:
-          command: '-X verify'
-          executor: java17
+          matrix:
+            alias: test
+            parameters:
+              executor:
+                - java17
+                - java21
+      - coverage:
+          requires:
+            - test
