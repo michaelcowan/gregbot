@@ -55,7 +55,7 @@
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.10.0</mockito.version>
         <vault-driver.version>5.1.0</vault-driver.version>
-        <wiremock.version>3.0.1</wiremock.version>
+        <wiremock.version>3.0.3</wiremock.version>
 
         <jacoco-plugin.version>0.8.11</jacoco-plugin.version>
         <surefire-plugin.version>3.2.5</surefire-plugin.version>
@@ -93,19 +93,13 @@
             <version>${jakarta-el.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
 
-        <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock</artifactId>
-            <version>${wiremock.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>io.blt</groupId>
             <artifactId>blt-assertj</artifactId>
@@ -139,6 +133,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
