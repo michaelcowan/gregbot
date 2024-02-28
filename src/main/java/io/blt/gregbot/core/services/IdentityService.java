@@ -14,10 +14,12 @@ import io.blt.gregbot.core.plugin.SecretRenderer;
 import io.blt.gregbot.core.properties.Properties;
 import io.blt.gregbot.core.properties.Properties.Identity;
 import io.blt.gregbot.core.properties.Properties.Secret;
+import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import io.blt.util.Ctr;
 import io.blt.util.Ex;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,14 +31,16 @@ import static java.util.Objects.isNull;
  */
 public class IdentityService {
 
-    private final Map<String, SecretRenderer> secretRenderers;
-    private final Map<String, IdentityPlugin> identityPlugins;
+    private final Map<String, Secret> secrets;
+    private final Map<String, Identity> identities;
+    private final Map<Secret, SecretRenderer> secretRenderers = new HashMap<>();
+    private final Map<Identity, IdentityPlugin> identityPlugins = new HashMap<>();
 
     public IdentityService(
             Map<String, Secret> secrets,
-            Map<String, Identity> identities) throws IdentityServiceException {
-        this.secretRenderers = Ctr.transformValues(loadSecretPlugins(secrets), SecretRenderer::new);
-        this.identityPlugins = loadIdentityPlugins(identities);
+            Map<String, Identity> identities) {
+        this.secrets = secrets;
+        this.identities = identities;
     }
 
     /**
@@ -45,42 +49,55 @@ public class IdentityService {
      * @param identity the identity name to search for
      * @return the found {@link IdentityPlugin} or empty if not found
      */
-    public Optional<IdentityPlugin> find(String identity) {
-        return Optional.ofNullable(identityPlugins.get(identity));
+    public Optional<IdentityPlugin> find(String identity) throws IdentityServiceException {
+        var i = identities.get(identity);
+        if (isNull(i)) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(getOrComputeIdentityPlugin(i));
     }
 
-    private Map<String, SecretPlugin> loadSecretPlugins(Map<String, Secret> secrets)
-            throws IdentityServiceException {
-        var loader = new PluginLoader<>(SecretPlugin.class);
-        return Ctr.transformValues(secrets,
-                s -> Ex.transformExceptions(() -> loader.load(s.plugin()), IdentityServiceException::new));
+    private IdentityPlugin getOrComputeIdentityPlugin(Identity identity) throws IdentityServiceException {
+        return Ctr.computeIfAbsent(identityPlugins, identity, i ->
+                Ex.transformExceptions(
+                        () -> loadIdentityPlugin(i),
+                        IdentityServiceException::new));
     }
 
-    private Map<String, IdentityPlugin> loadIdentityPlugins(Map<String, Identity> identities)
-            throws IdentityServiceException {
+    private IdentityPlugin loadIdentityPlugin(Identity identity) throws PluginException, SecretRenderException {
         var loader = new PluginLoader<>(IdentityPlugin.class);
-        return Ctr.transformValues(identities,
-                i -> Ex.transformExceptions(() -> loader.load(resolvedPlugin(i)), IdentityServiceException::new));
+        return loader.load(resolvedPluginProperties(identity));
     }
 
-    private Properties.Plugin resolvedPlugin(Identity identity) throws SecretRenderException {
+    private Properties.Plugin resolvedPluginProperties(Identity identity)
+            throws SecretRenderException, PluginException {
         if (isNull(identity.secrets())) {
             return identity.plugin();
         }
 
-        var secretRenderer = findSecretRenderer(identity.secrets());
+        var secretRenderer = getOrComputeSecretRenderer(findSecret(identity));
 
         var properties = Ctr.transformValues(identity.plugin().properties(), secretRenderer::render);
 
         return new Properties.Plugin(identity.plugin().type(), properties);
     }
 
-    private SecretRenderer findSecretRenderer(String name) {
-        var result = secretRenderers.get(name);
+    private Secret findSecret(Identity identity) {
+        var name = identity.secrets();
+        var result = secrets.get(name);
         if (isNull(result)) {
             throw new IllegalArgumentException("Cannot find secret plugin " + name);
         }
         return result;
+    }
+
+    private SecretRenderer getOrComputeSecretRenderer(Secret secret) throws PluginException {
+        return Ctr.computeIfAbsent(secretRenderers, secret, s -> new SecretRenderer(loadSecretPlugin(s)));
+    }
+
+    private SecretPlugin loadSecretPlugin(Secret secret) throws PluginException {
+        var loader = new PluginLoader<>(SecretPlugin.class);
+        return loader.load(secret.plugin());
     }
 
 }
