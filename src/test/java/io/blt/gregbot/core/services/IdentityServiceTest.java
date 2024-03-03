@@ -26,6 +26,23 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 class IdentityServiceTest {
 
     @Test
+    void shouldNotLoadSecretPluginInCtor() {
+        new IdentityService(
+                Map.of("SecretPlugin", new Secret(
+                        new Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of()))),
+                Map.of());
+    }
+
+    @Test
+    void shouldNotLoadIdentityPluginInCtor() {
+        new IdentityService(
+                Map.of(),
+                Map.of("IdentityPlugin", new Identity(
+                        null, null, Map.of(),
+                        new Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of()))));
+    }
+
+    @Test
     void shouldLoadAndFindIdentityPluginWithoutSecretPlugin() throws IdentityServiceException {
         var service = new IdentityService(
                 Map.of("SecretPlugin", new Secret(
@@ -85,24 +102,28 @@ class IdentityServiceTest {
 
     @Test
     void shouldThrowWhenSpecifiedSecretPluginDoesNotExist() {
+        var service = new IdentityService(
+                Map.of("SecretPlugin", new Secret(
+                        new Plugin(TestableSecretPlugin.class.getName(), Map.of()))),
+                Map.of("IdentityPlugin", new Identity(
+                        null, "DoesNotExist", Map.of(),
+                        new Plugin(TestableIdentityPlugin.class.getName(), Map.of()))));
+
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new IdentityService(
-                        Map.of("SecretPlugin", new Secret(
-                                new Plugin(TestableSecretPlugin.class.getName(), Map.of()))),
-                        Map.of("IdentityPlugin", new Identity(
-                                null, "DoesNotExist", Map.of(),
-                                new Plugin(TestableIdentityPlugin.class.getName(), Map.of())))))
+                .isThrownBy(() -> service.find("IdentityPlugin"))
                 .withMessage("Cannot find secret plugin DoesNotExist");
     }
 
     @Test
     void shouldRaiseExceptionWhenIdentityPluginThrows() {
+        var service = new IdentityService(
+                Map.of(),
+                Map.of("IdentityPlugin", new Identity(
+                        null, null, Map.of(),
+                        new Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of()))));
+
         assertThatExceptionOfType(IdentityServiceException.class)
-                .isThrownBy(() -> new IdentityService(
-                        Map.of(),
-                        Map.of("IdentityPlugin", new Identity(
-                                null, null, Map.of(),
-                                new Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of())))))
+                .isThrownBy(() -> service.find("IdentityPlugin"))
                 .havingCause()
                 .isInstanceOf(PluginException.class)
                 .withMessage("identity plugin test load exception");
@@ -110,13 +131,15 @@ class IdentityServiceTest {
 
     @Test
     void shouldRaiseExceptionWhenSecretPluginThrows() {
+        var service = new IdentityService(
+                Map.of("SecretPlugin", new Secret(
+                        new Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of()))),
+                Map.of("IdentityPlugin", new Identity(
+                        null, "SecretPlugin", Map.of(),
+                        new Plugin(TestableIdentityPlugin.class.getName(), Map.of()))));
+
         assertThatExceptionOfType(IdentityServiceException.class)
-                .isThrownBy(() -> new IdentityService(
-                        Map.of("SecretPlugin", new Secret(
-                                new Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of()))),
-                        Map.of("IdentityPlugin", new Identity(
-                                null, "SecretPlugin", Map.of(),
-                                new Plugin(TestableIdentityPlugin.class.getName(), Map.of())))))
+                .isThrownBy(() -> service.find("IdentityPlugin"))
                 .havingCause()
                 .isInstanceOf(PluginException.class)
                 .withMessage("secret plugin test load exception");

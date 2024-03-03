@@ -57,6 +57,17 @@ class PluginLoaderTest {
         }
 
         @Test
+        void loadShouldReturnDifferentInstanceOfSecretPluginOnEachCall() throws PluginException {
+            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, Map.of());
+
+            var result1 = loader.load(plugin);
+            var result2 = loader.load(plugin);
+
+            assertThat(result1)
+                    .isNotEqualTo(result2);
+        }
+
+        @Test
         void loadShouldCallSecretPluginLoadPassingProperties() throws PluginException {
             var properties = Map.of("mock-key", "mock-value");
             var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
@@ -107,6 +118,17 @@ class PluginLoaderTest {
 
             assertThat(result)
                     .isInstanceOf(IdentityPlugin.class);
+        }
+
+        @Test
+        void loadShouldReturnDifferentInstanceOfIdentityPluginOnEachCall() throws PluginException {
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, Map.of());
+
+            var result1 = loader.load(plugin);
+            var result2 = loader.load(plugin);
+
+            assertThat(result1)
+                    .isNotEqualTo(result2);
         }
 
         @Test

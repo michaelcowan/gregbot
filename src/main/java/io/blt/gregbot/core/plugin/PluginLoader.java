@@ -23,19 +23,17 @@ import static io.blt.util.stream.SingletonCollectors.toOptional;
  */
 public class PluginLoader<T extends Plugin> {
 
-    private final List<T> plugins;
+    private final ServiceLoader<T> loader;
 
     public PluginLoader(Class<T> type) {
-        this.plugins = ServiceLoader.load(type).stream()
-                .map(ServiceLoader.Provider::get)
-                .toList();
+        this.loader = ServiceLoader.load(type);
     }
 
     /**
-     * Loads an implementation of {@code Plugin} matching the provided plugin properties.
+     * Creates and loads an implementation of {@code Plugin} matching the provided plugin properties.
      *
      * @param plugin the plugin properties
-     * @return loaded plugin instance
+     * @return a new loaded plugin instance
      * @throws PluginException        if there is an error loading the plugin
      * @throws NoSuchElementException if no plugin matches the properties
      */
@@ -44,25 +42,26 @@ public class PluginLoader<T extends Plugin> {
     }
 
     /**
-     * Returns a list of all plugin types loaded by {@code PluginLoader}.
+     * Returns a list of all plugin types supported by this instance.
      *
      * @return list of plugin types
      */
     public List<String> plugins() {
-        return plugins.stream()
-                .map(this::pluginType)
+        return loader.stream()
+                .map(this::providerType)
                 .toList();
     }
 
     private T findPluginOrThrow(Properties.Plugin plugin) {
-        return plugins.stream()
-                .filter(p -> pluginType(p).equals(plugin.type()))
+        return loader.stream()
+                .filter(p -> providerType(p).equals(plugin.type()))
+                .map(ServiceLoader.Provider::get)
                 .collect(toOptional())
                 .orElseThrow();
     }
 
-    private String pluginType(T plugin) {
-        return plugin.getClass().getName();
+    private String providerType(ServiceLoader.Provider<T> provider) {
+        return provider.type().getName();
     }
 
 }
