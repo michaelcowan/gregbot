@@ -4,6 +4,7 @@
 
 [![CircleCI](https://img.shields.io/circleci/build/github/michaelcowan/gregbot/master.svg)](https://dl.circleci.com/status-badge/redirect/gh/michaelcowan/gregbot/tree/master)
 [![Codecov](https://img.shields.io/codecov/c/github/michaelcowan/gregbot)](https://codecov.io/github/michaelcowan/gregbot)
+![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/michaelcowan_gregbot?server=https%3A%2F%2Fsonarcloud.io)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/michaelcowan/gregbot)](https://www.codefactor.io/repository/github/michaelcowan/gregbot)
 
 ## Identity
