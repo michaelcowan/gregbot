@@ -22,6 +22,7 @@ import io.blt.util.Ex;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.lang3.Validate;
 
 import static java.util.Objects.isNull;
 
@@ -84,11 +85,7 @@ public class IdentityService {
 
     private Secret findSecret(Identity identity) {
         var name = identity.secrets();
-        var result = secrets.get(name);
-        if (isNull(result)) {
-            throw new IllegalArgumentException("Cannot find secret plugin " + name);
-        }
-        return result;
+        return Validate.notNull(secrets.get(name), "Cannot find secret plugin '%s'", name);
     }
 
     private SecretRenderer getOrComputeSecretRenderer(Secret secret) throws PluginException {

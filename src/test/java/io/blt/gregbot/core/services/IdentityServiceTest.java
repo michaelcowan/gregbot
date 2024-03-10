@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 class IdentityServiceTest {
 
@@ -109,9 +110,9 @@ class IdentityServiceTest {
                         null, "DoesNotExist", Map.of(),
                         new Plugin(TestableIdentityPlugin.class.getName(), Map.of()))));
 
-        assertThatIllegalArgumentException()
+        assertThatNullPointerException()
                 .isThrownBy(() -> service.find("IdentityPlugin"))
-                .withMessage("Cannot find secret plugin DoesNotExist");
+                .withMessage("Cannot find secret plugin 'DoesNotExist'");
     }
 
     @Test
