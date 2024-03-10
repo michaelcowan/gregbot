@@ -67,10 +67,10 @@ public class IdentityService {
 
     private IdentityPlugin loadIdentityPlugin(Identity identity) throws PluginException, SecretRenderException {
         var loader = new PluginLoader<>(IdentityPlugin.class);
-        return loader.load(resolvedPluginProperties(identity));
+        return loader.load(renderedPluginProperties(identity));
     }
 
-    private Properties.Plugin resolvedPluginProperties(Identity identity)
+    private Properties.Plugin renderedPluginProperties(Identity identity)
             throws SecretRenderException, PluginException {
         if (isNull(identity.secrets())) {
             return identity.plugin();
