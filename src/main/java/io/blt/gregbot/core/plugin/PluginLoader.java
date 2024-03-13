@@ -36,6 +36,7 @@ public class PluginLoader<T extends Plugin> {
      * @return a new loaded plugin instance
      * @throws PluginException        if there is an error loading the plugin
      * @throws NoSuchElementException if no plugin matches the properties
+     * @throws NullPointerException   if {@code plugin} is {@code null}
      */
     public T load(Properties.Plugin plugin) throws PluginException {
         return Obj.poke(findPluginOrThrow(plugin), p -> p.load(plugin.properties()));
