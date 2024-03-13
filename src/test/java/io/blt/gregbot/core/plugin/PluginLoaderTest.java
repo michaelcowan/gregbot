@@ -79,6 +79,12 @@ class PluginLoaderTest {
         }
 
         @Test
+        void loadShouldThrowWhenSpecifiedPluginIsNull() {
+            assertThatExceptionOfType(NullPointerException.class)
+                    .isThrownBy(() -> loader.load(null));
+        }
+
+        @Test
         void loadShouldThrowWhenPluginTypeCannotBeFound() {
             var plugin = new Properties.Plugin("UnknownType", Map.of());
 
@@ -140,6 +146,12 @@ class PluginLoaderTest {
 
             assertThat(result.loadedProperties())
                     .containsExactlyEntriesOf(properties);
+        }
+
+        @Test
+        void loadShouldThrowWhenSpecifiedPluginIsNull() {
+            assertThatExceptionOfType(NullPointerException.class)
+                    .isThrownBy(() -> loader.load(null));
         }
 
         @Test
