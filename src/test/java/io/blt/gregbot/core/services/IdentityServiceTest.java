@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.assertj.core.data.MapEntry.entry;
 
 class IdentityServiceTest {
 
@@ -144,6 +144,61 @@ class IdentityServiceTest {
                 .havingCause()
                 .isInstanceOf(PluginException.class)
                 .withMessage("secret plugin test load exception");
+    }
+
+    // ---
+
+    @Test
+    void shouldReturnIdentityVariablesWithoutPlugin() throws IdentityServiceException {
+        var service = new IdentityService(
+                Map.of(),
+                Map.of("MockIdentity", identityWithProperties()));
+
+        var variables = service.variablesFor("MockIdentity");
+
+        assertThat(variables)
+                .containsOnly(
+                        entry("plain-key", "plain-value"));
+    }
+
+    @Test
+    void shouldReturnIdentityVariablesWithPlugin() throws IdentityServiceException {
+        var service = new IdentityService(
+                Map.of(),
+                Map.of("MockIdentity", identityWithPropertiesAndPlugin()));
+
+        var variables = service.variablesFor("MockIdentity");
+
+        assertThat(variables)
+                .containsOnly(
+                        entry("plain-key", "plain-value"),
+                        entry("identity-plugin-key", "identity-plugin-value"));
+    }
+
+    @Test
+    void shouldReturnIdentityVariablesWithPluginWithSecretPlugin() throws IdentityServiceException {
+        var service = new IdentityService(
+                Map.of("MockSecret", new Secret(
+                        new Plugin(TestableSecretPlugin.class.getName(), Map.of()))),
+                Map.of("MockIdentity", new Identity(
+                        null, "MockSecret", Map.of("plain-key", "plain-value"),
+                        new Plugin(TestableIdentityPlugin.class.getName(), Map.of("plugin-key", "plugin-value")))));
+
+        var variables = service.variablesFor("MockIdentity");
+
+        assertThat(variables)
+                .containsOnly(
+                        entry("plain-key", "plain-value"),
+                        entry("identity-plugin-key", "identity-plugin-value"));
+    }
+
+    private Identity identityWithProperties() {
+        return new Identity(null, null, Map.of("plain-key", "plain-value"), null);
+    }
+
+    private Identity identityWithPropertiesAndPlugin() {
+        return new Identity(null, null, Map.of("plain-key", "plain-value"),
+                new Plugin(TestableIdentityPlugin.class.getName(), Map.of()));
     }
 
 }
