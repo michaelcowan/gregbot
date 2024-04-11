@@ -25,7 +25,7 @@ public class TestableIdentityPlugin implements IdentityPlugin {
 
     @Override
     public Map<String, String> variables() {
-        return null;
+        return Map.of("identity-plugin-key", "identity-plugin-value");
     }
 
     public Map<String, String> loadedProperties() {

@@ -25,6 +25,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.Validate;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Manages the loading of identity plugins.
@@ -36,6 +37,8 @@ public class IdentityService {
     private final Map<String, Identity> identities;
     private final Map<Secret, SecretRenderer> secretRenderers = new HashMap<>();
     private final Map<Identity, IdentityPlugin> identityPlugins = new HashMap<>();
+    private final PluginLoader<SecretPlugin> secretLoader = new PluginLoader<>(SecretPlugin.class);
+    private final PluginLoader<IdentityPlugin> identityLoader = new PluginLoader<>(IdentityPlugin.class);
 
     public IdentityService(
             Map<String, Secret> secrets,
@@ -58,6 +61,22 @@ public class IdentityService {
         return Optional.ofNullable(getOrComputeIdentityPlugin(i));
     }
 
+    public Map<String, String> variablesFor(String identity) throws IdentityServiceException {
+        var i = Validate.notNull(identities.get(identity), "Cannot find identity for '%s'", identity);
+
+        var variables = new HashMap<>(i.variables());
+
+        var plugin = getOrComputeIdentityPlugin(i);
+        if (nonNull(plugin)) {
+            variables.putAll(
+                    Ex.transformExceptions(
+                            plugin::variables,
+                            IdentityServiceException::new));
+        }
+
+        return variables;
+    }
+
     private IdentityPlugin getOrComputeIdentityPlugin(Identity identity) throws IdentityServiceException {
         return Ctr.computeIfAbsent(identityPlugins, identity, i ->
                 Ex.transformExceptions(
@@ -66,8 +85,8 @@ public class IdentityService {
     }
 
     private IdentityPlugin loadIdentityPlugin(Identity identity) throws PluginException, SecretRenderException {
-        var loader = new PluginLoader<>(IdentityPlugin.class);
-        return loader.load(renderedPluginProperties(identity));
+        var rendered = renderedPluginProperties(identity);
+        return isNull(rendered) ? null : identityLoader.load(rendered);
     }
 
     private Properties.Plugin renderedPluginProperties(Identity identity)
@@ -93,8 +112,7 @@ public class IdentityService {
     }
 
     private SecretPlugin loadSecretPlugin(Secret secret) throws PluginException {
-        var loader = new PluginLoader<>(SecretPlugin.class);
-        return loader.load(secret.plugin());
+        return secretLoader.load(secret.plugin());
     }
 
 }
