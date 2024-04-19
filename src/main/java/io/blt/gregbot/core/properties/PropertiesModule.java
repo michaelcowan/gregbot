@@ -47,6 +47,7 @@ import java.util.Map;
 public class PropertiesModule extends SimpleModule {
 
     public PropertiesModule() {
+        super();
 
         setDeserializerModifier(new BeanDeserializerModifier() {
             @Override
