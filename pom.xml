@@ -44,7 +44,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <assertj.version>3.25.3</assertj.version>
+        <assertj.version>3.26.0</assertj.version>
         <blt-assertj.version>1.0.1</blt-assertj.version>
         <blt-core.version>1.0.7</blt-core.version>
         <commons-lang3.version>3.14.0</commons-lang3.version>
