@@ -55,7 +55,7 @@
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.11.0</mockito.version>
         <vault-driver.version>5.1.0</vault-driver.version>
-        <wiremock.version>3.5.3</wiremock.version>
+        <wiremock.version>3.8.0</wiremock.version>
 
         <jacoco-plugin.version>0.8.12</jacoco-plugin.version>
         <surefire-plugin.version>3.2.5</surefire-plugin.version>
