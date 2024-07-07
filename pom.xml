@@ -52,7 +52,7 @@
         <httpcore5.version>5.2.4</httpcore5.version>
         <jackson.version>2.17.2</jackson.version>
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
-        <junit.version>5.10.2</junit.version>
+        <junit.version>5.10.3</junit.version>
         <mockito.version>5.12.0</mockito.version>
         <vault-driver.version>5.1.0</vault-driver.version>
         <wiremock.version>3.8.0</wiremock.version>
