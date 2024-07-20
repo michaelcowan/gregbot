@@ -58,7 +58,8 @@ public class PluginLoader<T extends Plugin> {
                 .filter(p -> providerType(p).equals(plugin.type()))
                 .map(ServiceLoader.Provider::get)
                 .collect(toOptional())
-                .orElseThrow();
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Cannot find plugin '%s'".formatted(plugin.type())));
     }
 
     private String providerType(ServiceLoader.Provider<T> provider) {

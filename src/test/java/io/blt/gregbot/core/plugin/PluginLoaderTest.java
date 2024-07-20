@@ -86,10 +86,11 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldThrowWhenPluginTypeCannotBeFound() {
-            var plugin = new Properties.Plugin("UnknownType", Map.of());
+            var plugin = new Properties.Plugin("UnknownSecretPluginType", Map.of());
 
             assertThatExceptionOfType(NoSuchElementException.class)
-                    .isThrownBy(() -> loader.load(plugin));
+                    .isThrownBy(() -> loader.load(plugin))
+                    .withMessage("Cannot find plugin 'UnknownSecretPluginType'");
         }
 
         @Test
@@ -156,10 +157,11 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldThrowWhenPluginTypeCannotBeFound() {
-            var plugin = new Properties.Plugin("UnknownType", Map.of());
+            var plugin = new Properties.Plugin("UnknownIdentityPluginType", Map.of());
 
             assertThatExceptionOfType(NoSuchElementException.class)
-                    .isThrownBy(() -> loader.load(plugin));
+                    .isThrownBy(() -> loader.load(plugin))
+                    .withMessage("Cannot find plugin 'UnknownIdentityPluginType'");
         }
 
         @Test
