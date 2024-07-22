@@ -72,9 +72,9 @@ class PluginLoaderTest {
             var properties = Map.of("mock-key", "mock-value");
             var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
 
-            var result = ((TestableSecretPlugin) loader.load(plugin));
+            loader.load(plugin);
 
-            assertThat(result.loadedProperties())
+            assertThat(TestableSecretPlugin.loadedProperties())
                     .containsExactlyEntriesOf(properties);
         }
 
@@ -143,9 +143,9 @@ class PluginLoaderTest {
             var properties = Map.of("mock-key", "mock-value");
             var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, properties);
 
-            var result = ((TestableIdentityPlugin) loader.load(plugin));
+            loader.load(plugin);
 
-            assertThat(result.loadedProperties())
+            assertThat(TestableIdentityPlugin.loadedProperties())
                     .containsExactlyEntriesOf(properties);
         }
 

@@ -16,19 +16,20 @@ public class TestableIdentityPlugin implements IdentityPlugin {
 
     static String TYPE = "io.blt.gregbot.core.plugin.TestableIdentityPlugin";
 
-    private final Map<String, String> loadedProperties = new HashMap<>();
+    private static Map<String, String> loadedProperties;
 
     @Override
     public void load(Map<String, String> properties) {
+        loadedProperties = new HashMap<>();
         loadedProperties.putAll(properties);
     }
 
     @Override
     public Map<String, String> variables() {
-        return null;
+        return Map.of("identity-plugin-key", "identity-plugin-value");
     }
 
-    public Map<String, String> loadedProperties() {
+    public static Map<String, String> loadedProperties() {
         return loadedProperties;
     }
 }
