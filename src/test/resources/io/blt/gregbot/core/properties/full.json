@@ -67,7 +67,7 @@
           "headers": {
             "x-api-key": "{{api_key}}"
           },
-          "verb": "GET",
+          "verb": "get",
           "path": "{{skynet_host}}/ping"
         },
         "List Terminators": {
@@ -109,7 +109,7 @@
           "headers": {
             "x-api-key": "{{api_key}}"
           },
-          "verb": "DELETE",
+          "verb": "delete",
           "path": "{{skynet_host}}/aerials/{terminator_model}"
         }
       },

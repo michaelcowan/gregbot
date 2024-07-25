@@ -9,6 +9,7 @@
 package io.blt.gregbot.core.properties;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -123,13 +124,14 @@ public record Properties(
     /**
      * Returns an instance of {@link Properties} created from a JSON resource file.
      * <p>
-     *     This method will:
+     * This method will:
      *     <ol>
      *         <li>Load the resource file</li>
      *         <li>Deserialize into {@link Properties} and nested {@code record}s</li>
      *         <li>Perform validation, throwing on failure</li>
      *     </ol>
      * </p>
+     *
      * @param filename resource file to load
      * @return instance of {@link Properties}
      * @throws IOException if the file cannot be read or there is a validation fails
@@ -163,6 +165,7 @@ public record Properties(
     private static ObjectMapper buildMapper() {
         return JsonMapper.builder()
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .propertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE)
                 .addModule(new PropertiesModule())
                 .build();
