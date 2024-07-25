@@ -14,8 +14,6 @@ import java.util.Map;
 
 public class TestableIdentityPlugin implements IdentityPlugin {
 
-    static final String TYPE = "io.blt.gregbot.core.plugin.TestableIdentityPlugin";
-
     private static Map<String, String> loadedProperties;
     private static int instanceCount = 0;
 

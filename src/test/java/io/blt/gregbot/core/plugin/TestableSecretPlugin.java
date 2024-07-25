@@ -14,8 +14,6 @@ import java.util.Map;
 
 public class TestableSecretPlugin implements SecretPlugin {
 
-    static final String TYPE = "io.blt.gregbot.core.plugin.TestableSecretPlugin";
-
     private static Map<String, String> loadedProperties;
     private static int instanceCount = 0;
 

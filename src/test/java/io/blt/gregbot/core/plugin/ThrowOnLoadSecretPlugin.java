@@ -14,7 +14,6 @@ import java.util.Map;
 
 public class ThrowOnLoadSecretPlugin implements SecretPlugin {
 
-    static String TYPE = "io.blt.gregbot.core.plugin.ThrowOnLoadSecretPlugin";
 
     @Override
     public void load(Map<String, String> properties) throws PluginException {

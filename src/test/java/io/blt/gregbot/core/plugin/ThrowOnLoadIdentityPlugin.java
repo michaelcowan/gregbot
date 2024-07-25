@@ -9,13 +9,10 @@
 package io.blt.gregbot.core.plugin;
 
 import io.blt.gregbot.plugin.PluginException;
-import io.blt.gregbot.plugin.identities.IdentityException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import java.util.Map;
 
 public class ThrowOnLoadIdentityPlugin implements IdentityPlugin {
-    
-    static String TYPE = "io.blt.gregbot.core.plugin.ThrowOnLoadIdentityPlugin";
 
     @Override
     public void load(Map<String, String> properties) throws PluginException {
@@ -23,7 +20,7 @@ public class ThrowOnLoadIdentityPlugin implements IdentityPlugin {
     }
 
     @Override
-    public Map<String, String> variables() throws IdentityException {
+    public Map<String, String> variables() {
         return null;
     }
 }

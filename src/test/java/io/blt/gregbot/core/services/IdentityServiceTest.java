@@ -32,8 +32,8 @@ class IdentityServiceTest {
     @Test
     void shouldNotLoadSecretPluginInCtor() {
         new IdentityService(
-                Map.of("SecretPlugin", new Secret(
-                        new Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of()))),
+                Map.of("SecretPlugin",
+                        new Secret(new Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of()))),
                 Map.of());
     }
 
@@ -41,9 +41,9 @@ class IdentityServiceTest {
     void shouldNotLoadIdentityPluginInCtor() {
         new IdentityService(
                 Map.of(),
-                Map.of("IdentityPlugin", new Identity(
-                        null, null, Map.of(),
-                        new Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of()))));
+                Map.of("IdentityPlugin",
+                        new Identity(null, null, Map.of(),
+                                new Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of()))));
     }
 
     @Nested
