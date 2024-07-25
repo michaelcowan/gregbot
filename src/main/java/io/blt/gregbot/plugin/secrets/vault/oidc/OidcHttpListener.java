@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -84,7 +85,7 @@ public class OidcHttpListener {
 
     private byte[] loadResource(String filename) throws IOException {
         try (var resource = OidcHttpListener.class.getResourceAsStream(filename)) {
-            return resource.readAllBytes();
+            return Objects.requireNonNull(resource).readAllBytes();
         }
     }
 
