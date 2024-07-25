@@ -18,7 +18,9 @@ public class ThrowOnSecretsForPathSecretPlugin implements SecretPlugin {
     public static final String MESSAGE = "secret plugin exception on secretsForPath";
 
     @Override
-    public void load(Map<String, String> properties) throws PluginException { }
+    public void load(Map<String, String> properties) throws PluginException {
+        // Don't need the test plugin to load properties
+    }
 
     @Override
     public Map<String, String> secretsForPath(String path) throws SecretException {

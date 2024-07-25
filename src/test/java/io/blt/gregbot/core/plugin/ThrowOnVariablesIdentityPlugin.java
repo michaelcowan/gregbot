@@ -18,7 +18,9 @@ public class ThrowOnVariablesIdentityPlugin implements IdentityPlugin {
     public static final String MESSAGE = "identity plugin exception on variables";
 
     @Override
-    public void load(Map<String, String> properties) throws PluginException { }
+    public void load(Map<String, String> properties) throws PluginException {
+        // Don't need the test plugin to load properties
+    }
 
     @Override
     public Map<String, String> variables() throws IdentityException {
