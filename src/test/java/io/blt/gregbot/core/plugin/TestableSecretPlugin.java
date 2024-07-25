@@ -13,10 +13,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestableSecretPlugin implements SecretPlugin {
-    
-    static String TYPE = "io.blt.gregbot.core.plugin.TestableSecretPlugin";
+
+    static final String TYPE = "io.blt.gregbot.core.plugin.TestableSecretPlugin";
 
     private static Map<String, String> loadedProperties;
+    private static int instanceCount = 0;
+
+    public TestableSecretPlugin() {
+        instanceCount++;
+    }
 
     @Override
     public void load(Map<String, String> properties) {
@@ -31,5 +36,13 @@ public class TestableSecretPlugin implements SecretPlugin {
 
     public static Map<String, String> loadedProperties() {
         return loadedProperties;
+    }
+
+    public static int instanceCount() {
+        return instanceCount;
+    }
+
+    public static void resetInstanceCount() {
+        instanceCount = 0;
     }
 }

@@ -21,10 +21,11 @@ import io.blt.util.Ctr;
 import io.blt.util.Ex;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import org.apache.commons.lang3.Validate;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Manages the loading of identity plugins.
@@ -36,6 +37,8 @@ public class IdentityService {
     private final Map<String, Identity> identities;
     private final Map<Secret, SecretRenderer> secretRenderers = new HashMap<>();
     private final Map<Identity, IdentityPlugin> identityPlugins = new HashMap<>();
+    private final PluginLoader<SecretPlugin> secretLoader = new PluginLoader<>(SecretPlugin.class);
+    private final PluginLoader<IdentityPlugin> identityLoader = new PluginLoader<>(IdentityPlugin.class);
 
     public IdentityService(
             Map<String, Secret> secrets,
@@ -45,17 +48,28 @@ public class IdentityService {
     }
 
     /**
-     * Finds a fully loaded {@link IdentityPlugin} instance based on the provided identity name.
+     * Returns a fully rendered variable map for the specified identity.
      *
-     * @param identity the identity name to search for
-     * @return the found {@link IdentityPlugin} or empty if not found
+     * @param identity Identity to return variables for
+     * @return fully rendered variable map
+     * @throws IdentityServiceException if there is an error resolving identity variables
+     * @throws NoSuchElementException   if an identity, secret or plugin cannot be found
      */
-    public Optional<IdentityPlugin> find(String identity) throws IdentityServiceException {
-        var i = identities.get(identity);
-        if (isNull(i)) {
-            return Optional.empty();
+    public Map<String, String> variablesFor(String identity) throws IdentityServiceException {
+        var i = Ex.throwIf(identities.get(identity), Objects::isNull,
+                () -> new NoSuchElementException("Cannot find identity for '%s'".formatted(identity)));
+
+        var variables = new HashMap<>(i.variables());
+
+        var plugin = getOrComputeIdentityPlugin(i);
+        if (nonNull(plugin)) {
+            variables.putAll(
+                    Ex.transformExceptions(
+                            plugin::variables,
+                            IdentityServiceException::new));
         }
-        return Optional.ofNullable(getOrComputeIdentityPlugin(i));
+
+        return variables;
     }
 
     private IdentityPlugin getOrComputeIdentityPlugin(Identity identity) throws IdentityServiceException {
@@ -66,8 +80,8 @@ public class IdentityService {
     }
 
     private IdentityPlugin loadIdentityPlugin(Identity identity) throws PluginException, SecretRenderException {
-        var loader = new PluginLoader<>(IdentityPlugin.class);
-        return loader.load(renderedPluginProperties(identity));
+        var rendered = renderedPluginProperties(identity);
+        return isNull(rendered) ? null : identityLoader.load(rendered);
     }
 
     private Properties.Plugin renderedPluginProperties(Identity identity)
@@ -85,7 +99,8 @@ public class IdentityService {
 
     private Secret findSecret(Identity identity) {
         var name = identity.secrets();
-        return Validate.notNull(secrets.get(name), "Cannot find secret plugin '%s'", name);
+        return Ex.throwIf(secrets.get(name), Objects::isNull,
+                () -> new NoSuchElementException("Cannot find secret plugin '%s'".formatted(name)));
     }
 
     private SecretRenderer getOrComputeSecretRenderer(Secret secret) throws PluginException {
@@ -93,8 +108,7 @@ public class IdentityService {
     }
 
     private SecretPlugin loadSecretPlugin(Secret secret) throws PluginException {
-        var loader = new PluginLoader<>(SecretPlugin.class);
-        return loader.load(secret.plugin());
+        return secretLoader.load(secret.plugin());
     }
 
 }
