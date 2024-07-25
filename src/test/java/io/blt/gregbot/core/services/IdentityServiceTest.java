@@ -12,6 +12,8 @@ import io.blt.gregbot.core.plugin.TestableIdentityPlugin;
 import io.blt.gregbot.core.plugin.TestableSecretPlugin;
 import io.blt.gregbot.core.plugin.ThrowOnLoadIdentityPlugin;
 import io.blt.gregbot.core.plugin.ThrowOnLoadSecretPlugin;
+import io.blt.gregbot.core.plugin.ThrowOnSecretsForPathSecretPlugin;
+import io.blt.gregbot.core.plugin.ThrowOnVariablesIdentityPlugin;
 import io.blt.gregbot.core.properties.Properties.Identity;
 import io.blt.gregbot.core.properties.Properties.Plugin;
 import io.blt.gregbot.core.properties.Properties.Secret;
@@ -19,9 +21,13 @@ import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -155,57 +161,113 @@ class IdentityServiceTest {
                             entry("identity-plugin-key", "identity-plugin-value"));
         }
 
-        @Test
-        void shouldThrowWhenIdentityIsUnknown() {
-            var service = new IdentityService(
-                    Map.of(),
-                    Map.of("MockIdentity",
-                            new Identity(null, null, Map.of("plain-key", "plain-value"), null)));
+        @Nested
+        class UncheckedException {
 
-            assertThatExceptionOfType(NoSuchElementException.class)
-                    .isThrownBy(() -> service.variablesFor("UnknownIdentity"))
-                    .withMessage("Cannot find identity for 'UnknownIdentity'");
+            @Test
+            void shouldThrowWhenIdentityIsUnknown() {
+                var service = new IdentityService(
+                        Map.of(),
+                        Map.of("MockIdentity",
+                                new Identity(null, null, Map.of("plain-key", "plain-value"), null)));
+
+                assertThatExceptionOfType(NoSuchElementException.class)
+                        .isThrownBy(() -> service.variablesFor("UnknownIdentity"))
+                        .withMessage("Cannot find identity for 'UnknownIdentity'");
+            }
+
+            @Test
+            void shouldThrowWhenSecretIsUnknown() {
+                var service = new IdentityService(
+                        Map.of(),
+                        Map.of("MockIdentity",
+                                new Identity(null, "UnknownSecrets", Map.of("plain-key", "plain-value"), null)));
+
+                assertThatExceptionOfType(NoSuchElementException.class)
+                        .isThrownBy(() -> service.variablesFor("MockIdentity"))
+                        .withMessage("Cannot find secret plugin 'UnknownSecrets'");
+            }
+
+            @Test
+            void shouldThrowWhenIdentityPluginIsUnknown() {
+                var service = new IdentityService(
+                        Map.of(),
+                        Map.of("MockIdentity",
+                                new Identity(null, null, Map.of(),
+                                        new Plugin(UnknownIdentityPlugin.class.getName(), Map.of()))));
+
+                assertThatExceptionOfType(NoSuchElementException.class)
+                        .isThrownBy(() -> service.variablesFor("MockIdentity"))
+                        .withMessage(
+                                "Cannot find plugin 'io.blt.gregbot.core.services.IdentityServiceTest$UnknownIdentityPlugin'");
+            }
+
+            @Test
+            void shouldThrowWhenSecretPluginIsUnknown() {
+                var service = new IdentityService(
+                        Map.of("MockSecret",
+                                new Secret(new Plugin(UnknownSecretPlugin.class.getName(), Map.of()))),
+                        Map.of("MockIdentity",
+                                new Identity(null, "MockSecret", Map.of(),
+                                        new Plugin(TestableIdentityPlugin.class.getName(), Map.of()))));
+
+                assertThatExceptionOfType(NoSuchElementException.class)
+                        .isThrownBy(() -> service.variablesFor("MockIdentity"))
+                        .withMessage(
+                                "Cannot find plugin 'io.blt.gregbot.core.services.IdentityServiceTest$UnknownSecretPlugin'");
+            }
         }
 
-        @Test
-        void shouldThrowWhenSecretIsUnknown() {
-            var service = new IdentityService(
-                    Map.of(),
-                    Map.of("MockIdentity",
-                            new Identity(null, "UnknownSecrets", Map.of("plain-key", "plain-value"), null)));
+        @Nested
+        class CheckedException {
 
-            assertThatExceptionOfType(NoSuchElementException.class)
-                    .isThrownBy(() -> service.variablesFor("MockIdentity"))
-                    .withMessage("Cannot find secret plugin 'UnknownSecrets'");
-        }
+            static Stream<Arguments> shouldThrowWhenIdentityPluginThrows() {
+                return Stream.of(
+                        Arguments.of(ThrowOnLoadIdentityPlugin.class.getName(),
+                                ThrowOnLoadIdentityPlugin.MESSAGE),
+                        Arguments.of(ThrowOnVariablesIdentityPlugin.class.getName(),
+                                ThrowOnVariablesIdentityPlugin.MESSAGE));
+            }
 
-        @Test
-        void shouldThrowWhenIdentityPluginIsUnknown() {
-            var service = new IdentityService(
-                    Map.of(),
-                    Map.of("MockIdentity",
-                            new Identity(null, null, Map.of(),
-                                    new Plugin(UnknownIdentityPlugin.class.getName(), Map.of()))));
+            @ParameterizedTest
+            @MethodSource
+            void shouldThrowWhenIdentityPluginThrows(String identityPlugin, String expectedMessage) {
+                var service = new IdentityService(
+                        Map.of(),
+                        Map.of("MockIdentity",
+                                new Identity(null, null, Map.of(),
+                                        new Plugin(identityPlugin, Map.of()))));
 
-            assertThatExceptionOfType(NoSuchElementException.class)
-                    .isThrownBy(() -> service.variablesFor("MockIdentity"))
-                    .withMessage(
-                            "Cannot find plugin 'io.blt.gregbot.core.services.IdentityServiceTest$UnknownIdentityPlugin'");
-        }
+                assertThatExceptionOfType(IdentityServiceException.class)
+                        .isThrownBy(() -> service.variablesFor("MockIdentity"))
+                        .havingRootCause()
+                        .withMessageContaining(expectedMessage);
+            }
 
-        @Test
-        void shouldThrowWhenSecretPluginIsUnknown() {
-            var service = new IdentityService(
-                    Map.of("MockSecret",
-                            new Secret(new Plugin(UnknownSecretPlugin.class.getName(), Map.of()))),
-                    Map.of("MockIdentity",
-                            new Identity(null, "MockSecret", Map.of(),
-                                    new Plugin(TestableIdentityPlugin.class.getName(), Map.of()))));
+            static Stream<Arguments> shouldThrowWhenSecretPluginThrows() {
+                return Stream.of(
+                        Arguments.of(ThrowOnLoadSecretPlugin.class.getName(),
+                                ThrowOnLoadSecretPlugin.MESSAGE),
+                        Arguments.of(ThrowOnSecretsForPathSecretPlugin.class.getName(),
+                                ThrowOnSecretsForPathSecretPlugin.MESSAGE));
+            }
 
-            assertThatExceptionOfType(NoSuchElementException.class)
-                    .isThrownBy(() -> service.variablesFor("MockIdentity"))
-                    .withMessage(
-                            "Cannot find plugin 'io.blt.gregbot.core.services.IdentityServiceTest$UnknownSecretPlugin'");
+            @ParameterizedTest
+            @MethodSource
+            void shouldThrowWhenSecretPluginThrows(String secretPlugin, String expectedMessage) {
+                var service = new IdentityService(
+                        Map.of("MockSecret",
+                                new Secret(new Plugin(secretPlugin, Map.of()))),
+                        Map.of("MockIdentity",
+                                new Identity(null, "MockSecret", Map.of(),
+                                        new Plugin(TestableIdentityPlugin.class.getName(), Map.of("ke", "[p/k]")))));
+
+                assertThatExceptionOfType(IdentityServiceException.class)
+                        .isThrownBy(() -> service.variablesFor("MockIdentity"))
+                        .havingRootCause()
+                        .withMessageContaining(expectedMessage);
+            }
+
         }
 
         @Nested
