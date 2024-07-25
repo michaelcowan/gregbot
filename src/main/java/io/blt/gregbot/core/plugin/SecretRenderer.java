@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static io.blt.util.Ctr.computeIfAbsent;
-import static io.blt.util.Obj.throwIf;
+import static io.blt.util.Ex.throwIf;
 
 /**
  * Manage rendering secret templates including calling SecretPlugin.
