@@ -1,2 +1,3 @@
 io.blt.gregbot.core.plugin.TestableIdentityPlugin
 io.blt.gregbot.core.plugin.ThrowOnLoadIdentityPlugin
+io.blt.gregbot.core.plugin.ThrowOnVariablesIdentityPlugin
