@@ -436,6 +436,7 @@ class IdentityServiceTest {
 
         @Override
         public void load(Map<String, String> properties) {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -447,6 +448,7 @@ class IdentityServiceTest {
 
         @Override
         public void load(Map<String, String> properties) {
+            throw new UnsupportedOperationException();
         }
     }
 
