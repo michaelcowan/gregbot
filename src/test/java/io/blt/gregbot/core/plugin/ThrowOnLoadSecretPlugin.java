@@ -14,10 +14,11 @@ import java.util.Map;
 
 public class ThrowOnLoadSecretPlugin implements SecretPlugin {
 
+    public static final String MESSAGE = "secret plugin exception on load";
 
     @Override
     public void load(Map<String, String> properties) throws PluginException {
-        throw new PluginException("secret plugin test load exception", null);
+        throw new PluginException(MESSAGE, null);
     }
 
     @Override

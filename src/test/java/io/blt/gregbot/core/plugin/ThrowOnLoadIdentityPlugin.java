@@ -14,9 +14,11 @@ import java.util.Map;
 
 public class ThrowOnLoadIdentityPlugin implements IdentityPlugin {
 
+    public static final String MESSAGE = "identity plugin exception on load";
+
     @Override
     public void load(Map<String, String> properties) throws PluginException {
-        throw new PluginException("identity plugin test load exception", null);
+        throw new PluginException(MESSAGE, null);
     }
 
     @Override

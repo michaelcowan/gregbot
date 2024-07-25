@@ -99,7 +99,7 @@ class PluginLoaderTest {
 
             assertThatExceptionOfType(PluginException.class)
                     .isThrownBy(() -> loader.load(plugin))
-                    .withMessage("secret plugin test load exception");
+                    .withMessage(ThrowOnLoadSecretPlugin.MESSAGE);
         }
     }
 
@@ -170,7 +170,7 @@ class PluginLoaderTest {
 
             assertThatExceptionOfType(PluginException.class)
                     .isThrownBy(() -> loader.load(plugin))
-                    .withMessage("identity plugin test load exception");
+                    .withMessage(ThrowOnLoadIdentityPlugin.MESSAGE);
         }
     }
 
