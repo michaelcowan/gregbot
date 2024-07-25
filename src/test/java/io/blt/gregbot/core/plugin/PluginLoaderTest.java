@@ -35,7 +35,7 @@ class PluginLoaderTest {
     @Nested
     class SecretPluginInterface {
 
-        PluginLoader<?> loader = new PluginLoader<>(SecretPlugin.class);
+        final PluginLoader<?> loader = new PluginLoader<>(SecretPlugin.class);
 
         @Test
         void pluginsShouldReturnListOfAllPluginTypes() {
@@ -106,7 +106,7 @@ class PluginLoaderTest {
     @Nested
     class IdentityPluginInterface {
 
-        PluginLoader<?> loader = new PluginLoader<>(IdentityPlugin.class);
+        final PluginLoader<?> loader = new PluginLoader<>(IdentityPlugin.class);
 
         @Test
         void pluginsShouldReturnListOfAllPluginTypes() {

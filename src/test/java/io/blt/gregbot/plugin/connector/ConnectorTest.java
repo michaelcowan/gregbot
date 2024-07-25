@@ -169,7 +169,7 @@ class ConnectorTest {
 
         final Connector connector = new Connector("http://mock");
 
-        HttpRequest request = HttpRequest.newBuilder()
+        final HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://mock.domain/mock/path"))
                 .GET()
                 .build();

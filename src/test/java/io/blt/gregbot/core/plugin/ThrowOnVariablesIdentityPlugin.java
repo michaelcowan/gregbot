@@ -8,7 +8,6 @@
 
 package io.blt.gregbot.core.plugin;
 
-import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import java.util.Map;
@@ -18,7 +17,7 @@ public class ThrowOnVariablesIdentityPlugin implements IdentityPlugin {
     public static final String MESSAGE = "identity plugin exception on variables";
 
     @Override
-    public void load(Map<String, String> properties) throws PluginException {
+    public void load(Map<String, String> properties) {
         // Don't need the test plugin to load properties
     }
 
