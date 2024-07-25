@@ -9,21 +9,20 @@
 package io.blt.gregbot.core.plugin;
 
 import io.blt.gregbot.plugin.PluginException;
-import io.blt.gregbot.plugin.identities.IdentityException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import java.util.Map;
 
 public class ThrowOnLoadIdentityPlugin implements IdentityPlugin {
-    
-    static String TYPE = "io.blt.gregbot.core.plugin.ThrowOnLoadIdentityPlugin";
+
+    public static final String MESSAGE = "identity plugin exception on load";
 
     @Override
     public void load(Map<String, String> properties) throws PluginException {
-        throw new PluginException("identity plugin test load exception", null);
+        throw new PluginException(MESSAGE, null);
     }
 
     @Override
-    public Map<String, String> variables() throws IdentityException {
+    public Map<String, String> variables() {
         return null;
     }
 }

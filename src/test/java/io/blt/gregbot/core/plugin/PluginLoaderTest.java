@@ -43,12 +43,12 @@ class PluginLoaderTest {
 
             assertThat(plugins)
                     .isNotEmpty()
-                    .contains(TestableSecretPlugin.TYPE);
+                    .contains(TestableSecretPlugin.class.getName());
         }
 
         @Test
         void loadShouldReturnInstanceOfSecretPlugin() throws PluginException {
-            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, Map.of());
+            var plugin = new Properties.Plugin(TestableSecretPlugin.class.getName(), Map.of());
 
             var result = loader.load(plugin);
 
@@ -58,7 +58,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldReturnDifferentInstanceOfSecretPluginOnEachCall() throws PluginException {
-            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, Map.of());
+            var plugin = new Properties.Plugin(TestableSecretPlugin.class.getName(), Map.of());
 
             var result1 = loader.load(plugin);
             var result2 = loader.load(plugin);
@@ -70,29 +70,36 @@ class PluginLoaderTest {
         @Test
         void loadShouldCallSecretPluginLoadPassingProperties() throws PluginException {
             var properties = Map.of("mock-key", "mock-value");
-            var plugin = new Properties.Plugin(TestableSecretPlugin.TYPE, properties);
+            var plugin = new Properties.Plugin(TestableSecretPlugin.class.getName(), properties);
 
-            var result = ((TestableSecretPlugin) loader.load(plugin));
+            loader.load(plugin);
 
-            assertThat(result.loadedProperties())
+            assertThat(TestableSecretPlugin.loadedProperties())
                     .containsExactlyEntriesOf(properties);
         }
 
         @Test
+        void loadShouldThrowWhenSpecifiedPluginIsNull() {
+            assertThatExceptionOfType(NullPointerException.class)
+                    .isThrownBy(() -> loader.load(null));
+        }
+
+        @Test
         void loadShouldThrowWhenPluginTypeCannotBeFound() {
-            var plugin = new Properties.Plugin("UnknownType", Map.of());
+            var plugin = new Properties.Plugin("UnknownSecretPluginType", Map.of());
 
             assertThatExceptionOfType(NoSuchElementException.class)
-                    .isThrownBy(() -> loader.load(plugin));
+                    .isThrownBy(() -> loader.load(plugin))
+                    .withMessage("Cannot find plugin 'UnknownSecretPluginType'");
         }
 
         @Test
         void loadShouldThrowWhenPluginLoadThrows() {
-            var plugin = new Properties.Plugin(ThrowOnLoadSecretPlugin.TYPE, Map.of());
+            var plugin = new Properties.Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of());
 
             assertThatExceptionOfType(PluginException.class)
                     .isThrownBy(() -> loader.load(plugin))
-                    .withMessage("secret plugin test load exception");
+                    .withMessage(ThrowOnLoadSecretPlugin.MESSAGE);
         }
     }
 
@@ -107,12 +114,12 @@ class PluginLoaderTest {
 
             assertThat(plugins)
                     .isNotEmpty()
-                    .contains(TestableIdentityPlugin.TYPE);
+                    .contains(TestableIdentityPlugin.class.getName());
         }
 
         @Test
         void loadShouldReturnInstanceOfIdentityPlugin() throws PluginException {
-            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, Map.of());
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.class.getName(), Map.of());
 
             var result = loader.load(plugin);
 
@@ -122,7 +129,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldReturnDifferentInstanceOfIdentityPluginOnEachCall() throws PluginException {
-            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, Map.of());
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.class.getName(), Map.of());
 
             var result1 = loader.load(plugin);
             var result2 = loader.load(plugin);
@@ -134,29 +141,36 @@ class PluginLoaderTest {
         @Test
         void loadShouldCallIdentityPluginLoadPassingProperties() throws PluginException {
             var properties = Map.of("mock-key", "mock-value");
-            var plugin = new Properties.Plugin(TestableIdentityPlugin.TYPE, properties);
+            var plugin = new Properties.Plugin(TestableIdentityPlugin.class.getName(), properties);
 
-            var result = ((TestableIdentityPlugin) loader.load(plugin));
+            loader.load(plugin);
 
-            assertThat(result.loadedProperties())
+            assertThat(TestableIdentityPlugin.loadedProperties())
                     .containsExactlyEntriesOf(properties);
         }
 
         @Test
+        void loadShouldThrowWhenSpecifiedPluginIsNull() {
+            assertThatExceptionOfType(NullPointerException.class)
+                    .isThrownBy(() -> loader.load(null));
+        }
+
+        @Test
         void loadShouldThrowWhenPluginTypeCannotBeFound() {
-            var plugin = new Properties.Plugin("UnknownType", Map.of());
+            var plugin = new Properties.Plugin("UnknownIdentityPluginType", Map.of());
 
             assertThatExceptionOfType(NoSuchElementException.class)
-                    .isThrownBy(() -> loader.load(plugin));
+                    .isThrownBy(() -> loader.load(plugin))
+                    .withMessage("Cannot find plugin 'UnknownIdentityPluginType'");
         }
 
         @Test
         void loadShouldThrowWhenPluginLoadThrows() {
-            var plugin = new Properties.Plugin(ThrowOnLoadIdentityPlugin.TYPE, Map.of());
+            var plugin = new Properties.Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of());
 
             assertThatExceptionOfType(PluginException.class)
                     .isThrownBy(() -> loader.load(plugin))
-                    .withMessage("identity plugin test load exception");
+                    .withMessage(ThrowOnLoadIdentityPlugin.MESSAGE);
         }
     }
 

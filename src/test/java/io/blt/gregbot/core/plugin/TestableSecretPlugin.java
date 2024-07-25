@@ -13,22 +13,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestableSecretPlugin implements SecretPlugin {
-    
-    static String TYPE = "io.blt.gregbot.core.plugin.TestableSecretPlugin";
 
-    private final Map<String, String> loadedProperties = new HashMap<>();
+    private static Map<String, String> loadedProperties;
+    private static int instanceCount = 0;
+
+    public TestableSecretPlugin() {
+        instanceCount++;
+    }
 
     @Override
     public void load(Map<String, String> properties) {
+        loadedProperties = new HashMap<>();
         loadedProperties.putAll(properties);
     }
 
     @Override
     public Map<String, String> secretsForPath(String path) {
-        return Map.of("test-secret", path + "-test-value");
+        return Map.of("secret-key", path + "/secret-value");
     }
 
-    public Map<String, String> loadedProperties() {
+    public static Map<String, String> loadedProperties() {
         return loadedProperties;
+    }
+
+    public static int instanceCount() {
+        return instanceCount;
+    }
+
+    public static void resetInstanceCount() {
+        instanceCount = 0;
     }
 }

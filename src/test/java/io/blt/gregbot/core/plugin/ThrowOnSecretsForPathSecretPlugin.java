@@ -9,21 +9,22 @@
 package io.blt.gregbot.core.plugin;
 
 import io.blt.gregbot.plugin.PluginException;
+import io.blt.gregbot.plugin.secrets.SecretException;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
 import java.util.Map;
 
-public class ThrowOnLoadSecretPlugin implements SecretPlugin {
+public class ThrowOnSecretsForPathSecretPlugin implements SecretPlugin {
 
-    public static final String MESSAGE = "secret plugin exception on load";
+    public static final String MESSAGE = "secret plugin exception on secretsForPath";
 
     @Override
     public void load(Map<String, String> properties) throws PluginException {
-        throw new PluginException(MESSAGE, null);
+        // Don't need the test plugin to load properties
     }
 
     @Override
-    public Map<String, String> secretsForPath(String path) {
-        return null;
+    public Map<String, String> secretsForPath(String path) throws SecretException {
+        throw new SecretException(MESSAGE, null);
     }
 
 }
