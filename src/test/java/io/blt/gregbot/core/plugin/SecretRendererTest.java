@@ -42,7 +42,7 @@ class SecretRendererTest {
                     "Louis", "Apple")
     );
 
-    SecretPlugin plugin = spy(new SecretPlugin() {
+    final SecretPlugin plugin = spy(new SecretPlugin() {
         @Override
         public Map<String, String> secretsForPath(String path) {
             return secrets.get(path);
@@ -52,7 +52,7 @@ class SecretRendererTest {
         public void load(Map<String, String> properties) {}
     });
 
-    SecretRenderer renderer = new SecretRenderer(plugin);
+    final SecretRenderer renderer = new SecretRenderer(plugin);
 
     @ParameterizedTest
     @CsvSource({

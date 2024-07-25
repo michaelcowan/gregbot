@@ -55,7 +55,7 @@ class OidcTest {
     @Mock
     Connector.Result<CallbackResponse> callbackResponse;
 
-    OidcConfig config = OidcConfig.from(Map.of("listenTimeout", "1"));
+    final OidcConfig config = OidcConfig.from(Map.of("listenTimeout", "1"));
 
     Oidc oidc;
 
