@@ -49,7 +49,9 @@
       }
     },
     "Miles Dyson": {
+      "category": null,
       "secrets": "Cyberdyne Vault",
+      "variables": {},
       "plugin": {
         "type": "com.cyberdyne.gregbot.plugin.ImsUser",
         "properties": {
@@ -67,7 +69,7 @@
           "headers": {
             "x-api-key": "{{api_key}}"
           },
-          "verb": "get",
+          "verb": "GET",
           "path": "{{skynet_host}}/ping"
         },
         "List Terminators": {
@@ -109,7 +111,7 @@
           "headers": {
             "x-api-key": "{{api_key}}"
           },
-          "verb": "delete",
+          "verb": "DELETE",
           "path": "{{skynet_host}}/aerials/{terminator_model}"
         }
       },
@@ -127,7 +129,8 @@
               "Emergency": {
                 "requests": [
                   "Emergency Shutdown Terminator"
-                ]
+                ],
+                "folders": {}
               }
             }
           },
@@ -140,7 +143,8 @@
               "Emergency": {
                 "requests": [
                   "Emergency Shutdown Aerial"
-                ]
+                ],
+                "folders": {}
               }
             }
           },
@@ -148,7 +152,8 @@
             "requests": [
               "Emergency Shutdown Terminator",
               "Emergency Shutdown Aerial"
-            ]
+            ],
+            "folders": {}
           }
         }
       }
