@@ -1,0 +1,162 @@
+{
+  "client": {
+    "version": "HTTP_1_1",
+    "redirect": "NORMAL",
+    "connectionTimeout": 30,
+    "requestTimeout": 60
+  },
+  "secrets": {
+    "Cyberdyne Vault": {
+      "plugin": {
+        "type": "io.blt.gregbot.plugin.VaultOidc",
+        "properties": {
+          "host": "https://vault.cyberdyne.com"
+        }
+      }
+    }
+  },
+  "environments": {
+    "Cyberdyne Local": {
+      "variables": {
+        "skynet_host": "http://localhost:8081"
+      }
+    },
+    "Cyberdyne Stage": {
+      "variables": {
+        "skynet_host": "https://stage-skynet.cyberdyne.com"
+      }
+    },
+    "Cyberdyne Prod": {
+      "variables": {
+        "skynet_host": "https://skynet.cyberdyne.com"
+      }
+    }
+  },
+  "identities": {
+    "Portfolio Stage": {
+      "category": "Stage",
+      "secrets": "Cyberdyne Vault",
+      "variables": {
+        "api_key": "atari-80C88"
+      },
+      "plugin": {
+        "type": "com.cyberdyne.gregbot.plugin.ImsService",
+        "properties": {
+          "host": "https://stage-ims.cyberdyne.com",
+          "secret": "[cyberdyne/portfolio/ims/stage/secret]",
+          "variable": "auth_token"
+        }
+      }
+    },
+    "Miles Dyson": {
+      "category": null,
+      "secrets": "Cyberdyne Vault",
+      "variables": {},
+      "plugin": {
+        "type": "com.cyberdyne.gregbot.plugin.ImsUser",
+        "properties": {
+          "host": "https://ims.cyberdyne.com",
+          "secret": "[cyberdyne/mdyson/ims/prod/secret]",
+          "variable": "auth_token"
+        }
+      }
+    }
+  },
+  "collections": {
+    "Skynet": {
+      "requests": {
+        "Health Check": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "GET",
+          "path": "{{skynet_host}}/ping"
+        },
+        "List Terminators": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "GET",
+          "path": "{{skynet_host}}/terminators"
+        },
+        "Fetch Terminator": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "GET",
+          "path": "{{skynet_host}}/terminators/{terminator_model}"
+        },
+        "Emergency Shutdown Terminator": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "DELETE",
+          "path": "{{skynet_host}}/terminators/{terminator_model}"
+        },
+        "List Aerials": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "GET",
+          "path": "{{skynet_host}}/aerials"
+        },
+        "Fetch Aerial": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "GET",
+          "path": "{{skynet_host}}/aerials/{aerial_model}"
+        },
+        "Emergency Shutdown Aerial": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "DELETE",
+          "path": "{{skynet_host}}/aerials/{terminator_model}"
+        }
+      },
+      "layout": {
+        "requests": [
+          "Health Check"
+        ],
+        "folders": {
+          "Terminator": {
+            "requests": [
+              "List Terminators",
+              "Fetch Terminator"
+            ],
+            "folders": {
+              "Emergency": {
+                "requests": [
+                  "Emergency Shutdown Terminator"
+                ],
+                "folders": {}
+              }
+            }
+          },
+          "Aerial": {
+            "requests": [
+              "List Aerials",
+              "Fetch Aerial"
+            ],
+            "folders": {
+              "Emergency": {
+                "requests": [
+                  "Emergency Shutdown Aerial"
+                ],
+                "folders": {}
+              }
+            }
+          },
+          "Emergency": {
+            "requests": [
+              "Emergency Shutdown Terminator",
+              "Emergency Shutdown Aerial"
+            ],
+            "folders": {}
+          }
+        }
+      }
+    }
+  }
+}

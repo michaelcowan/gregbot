@@ -12,11 +12,15 @@ import jakarta.validation.Valid;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.stream.Stream;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.skyscreamer.jsonassert.JSONAssert;
 
+import static io.blt.test.TestUtils.loadAsString;
+import static io.blt.test.TestUtils.pojoToJson;
 import static io.blt.test.TestUtils.streamFieldsOfContainerTypes;
 import static io.blt.test.TestUtils.streamFieldsOfNestedTypes;
 import static io.blt.test.assertj.AnnotationAssertions.assertHasAnnotation;
@@ -108,6 +112,17 @@ class PropertiesTest {
 
         assertThat(layout.requests()).isUnmodifiable();
         assertThat(layout.folders().get("Emergency").requests()).isUnmodifiable();
+    }
+
+    @Test
+    void loadFromJsonShouldProduceObjectEqualToExpectedJson() throws IOException, JSONException {
+        var expected = loadAsString(getClass(), "full-expected.json");
+
+        var properties = Properties.loadFromJson("full.json");
+
+        var json = pojoToJson(properties);
+
+        JSONAssert.assertEquals(expected, json, true);
     }
 
 }

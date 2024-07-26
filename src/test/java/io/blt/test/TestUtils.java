@@ -8,6 +8,10 @@
 
 package io.blt.test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
@@ -44,6 +48,24 @@ public final class TestUtils {
     public static <T> Stream<Field> streamFieldsOfMapTypes(Class<T> type) {
         return Stream.of(type.getDeclaredFields())
                 .filter(f -> Map.class.isAssignableFrom(f.getType()));
+    }
+
+    public static <T> InputStream load(Class<T> type, String filename) {
+        return type.getResourceAsStream(filename);
+    }
+
+    public static <T> byte[] loadAsBytes(Class<T> type, String filename) throws IOException {
+        try (var stream = load(type, filename)) {
+            return stream.readAllBytes();
+        }
+    }
+
+    public static <T> String loadAsString(Class<T> type, String filename) throws IOException {
+        return new String(loadAsBytes(type, filename));
+    }
+
+    public static String pojoToJson(Object pojo) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(pojo);
     }
 
 }
