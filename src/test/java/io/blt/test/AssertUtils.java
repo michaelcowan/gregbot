@@ -17,7 +17,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public final class AssertUtils {
 
-    private AssertUtils() {}
+    private AssertUtils() {
+        throw new IllegalAccessError("Utility class should be accessed statically and never constructed");
+    }
 
     public static void assertValidUtilityClass(Class<?> clazz) throws NoSuchMethodException {
         assertThat(clazz)
