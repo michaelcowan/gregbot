@@ -10,6 +10,7 @@ package io.blt.gregbot.ui;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import io.blt.gregbot.ui.forms.MainForm;
+import io.blt.gregbot.ui.forms.SplashScreen;
 
 import javax.swing.*;
 
@@ -21,6 +22,9 @@ public class Ui {
 
     Ui() {
         configureLookAndFeel();
+
+        new SplashScreen("splash/octogreg", 1500)
+                .setVisible(true);
 
         var mainForm = new MainForm();
         mainForm.setVisible(true);
