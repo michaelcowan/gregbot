@@ -202,6 +202,7 @@
                 <version>${jacoco-plugin.version}</version>
                 <configuration>
                     <excludes>
+                        <exclude>io/blt/gregbot/ui/components/*</exclude>
                         <exclude>io/blt/gregbot/ui/forms/*</exclude>
                     </excludes>
                 </configuration>
