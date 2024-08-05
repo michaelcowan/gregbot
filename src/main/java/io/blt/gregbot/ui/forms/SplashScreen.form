@@ -8,9 +8,30 @@
     <border type="none"/>
     <children>
       <component id="25b85" class="io.blt.gregbot.ui.components.ScaledImagePanel" binding="scaledImagePanel" custom-create="true">
-        <constraints border-constraint="West"/>
+        <constraints border-constraint="Center"/>
         <properties/>
       </component>
+      <grid id="d6e33" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="e2c18" class="javax.swing.JLabel" binding="lowerTopLabel">
+            <constraints border-constraint="North"/>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="2d9a8" class="javax.swing.JLabel" binding="lowerBottomLabel">
+            <constraints border-constraint="South"/>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <text value=""/>
+            </properties>
+          </component>
+        </children>
+      </grid>
     </children>
   </grid>
 </form>
