@@ -18,6 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.blt.gregbot.ui.utils.AwtUtils.blankImage;
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
 import static io.blt.gregbot.ui.utils.AwtUtils.screenSize;
 import static io.blt.test.AssertUtils.assertValidUtilityClass;
@@ -71,6 +72,15 @@ class AwtUtilsTest {
 
         assertThat(result)
                 .isEqualTo(expected);
+    }
+
+    @Test
+    void blankImageShouldReturnSmallEmptyImage() {
+        var result = blankImage();
+
+        assertThat(result)
+                .extracting(i -> i.getWidth(null), i -> i.getHeight(null))
+                .containsOnly(1, 1);
     }
 
 }

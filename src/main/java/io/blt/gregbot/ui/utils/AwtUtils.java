@@ -9,8 +9,11 @@
 package io.blt.gregbot.ui.utils;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public final class AwtUtils {
+
+    private static final Image BLANK_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
     private AwtUtils() {
         throw new IllegalAccessError("Utility class should be accessed statically and never constructed");
@@ -24,6 +27,10 @@ public final class AwtUtils {
         return new Dimension(
                 (int) Math.ceil(dimension.getWidth() * scale),
                 (int) Math.ceil(dimension.getHeight() * scale));
+    }
+
+    public static Image blankImage() {
+        return BLANK_IMAGE;
     }
 
 }
