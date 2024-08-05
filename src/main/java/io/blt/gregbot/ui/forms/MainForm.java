@@ -9,7 +9,10 @@
 package io.blt.gregbot.ui.forms;
 
 import io.blt.gregbot.ApplicationProperties;
+import io.blt.util.Obj;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
 import static io.blt.gregbot.ui.utils.AwtUtils.screenSize;
@@ -21,6 +24,7 @@ public class MainForm extends JFrame {
     private JPanel contentPane;
 
     public MainForm() {
+        setJMenuBar(buildMenuBar());
         setContentPane(contentPane);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,6 +32,23 @@ public class MainForm extends JFrame {
         setTitle(ApplicationProperties.name());
         setSize(scaleDimension(screenSize(), 0.9));
         setLocationRelativeTo(null);
+    }
+
+    private JMenuBar buildMenuBar() {
+        var menuBar = new JMenuBar();
+
+        var file = menuBar.add(new JMenu("File"));
+        file.add(buildMenuItemWithAction("Exit", e -> sendWindowClosingEvent()));
+
+        return menuBar;
+    }
+
+    private JMenuItem buildMenuItemWithAction(String text, ActionListener action) {
+        return Obj.poke(new JMenuItem(text), i -> i.addActionListener(action));
+    }
+
+    private void sendWindowClosingEvent() {
+        processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
     {
