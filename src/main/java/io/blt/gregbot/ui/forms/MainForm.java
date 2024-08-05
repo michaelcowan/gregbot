@@ -8,6 +8,7 @@
 
 package io.blt.gregbot.ui.forms;
 
+import io.blt.gregbot.ApplicationProperties;
 import java.awt.*;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
@@ -24,7 +25,7 @@ public class MainForm extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setTitle("GregBot");
+        setTitle(ApplicationProperties.name());
         setSize(scaleDimension(screenSize(), 0.9));
         setLocationRelativeTo(null);
     }
