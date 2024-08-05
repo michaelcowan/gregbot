@@ -9,6 +9,7 @@
 package io.blt.gregbot.ui.forms;
 
 import io.blt.gregbot.ApplicationProperties;
+import io.blt.gregbot.ApplicationResources;
 import io.blt.util.Obj;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -28,6 +29,8 @@ public class MainForm extends JFrame {
         setContentPane(contentPane);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setIconImages(ApplicationResources.icons());
 
         setTitle(ApplicationProperties.name());
         setSize(scaleDimension(screenSize(), 0.9));
