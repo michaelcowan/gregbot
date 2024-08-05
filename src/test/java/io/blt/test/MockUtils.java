@@ -8,10 +8,14 @@
 
 package io.blt.test;
 
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import javax.swing.SwingUtilities;
+import static org.mockito.Mockito.withSettings;
+
+import javax.swing.*;
 
 public final class MockUtils {
 
@@ -29,6 +33,10 @@ public final class MockUtils {
         }
 
         return captor;
+    }
+
+    public static <T> MockedStatic<T> spyStatic(Class<T> type) {
+        return Mockito.mockStatic(type, withSettings().defaultAnswer(Answers.CALLS_REAL_METHODS));
     }
 
 }
