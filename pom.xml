@@ -13,6 +13,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>GregBot</name>
     <groupId>io.blt</groupId>
     <artifactId>gregbot</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -43,6 +44,10 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>MMMM dd, yyyy</maven.build.timestamp.format>
+        <copyright>Copyright © 2023-2024 Mike Cowan</copyright>
 
         <assertj.version>3.26.3</assertj.version>
         <blt-assertj.version>1.0.2</blt-assertj.version>
@@ -165,6 +170,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -9,9 +9,13 @@
 package io.blt.test;
 
 import java.util.function.Consumer;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+
+import static org.mockito.Mockito.withSettings;
 
 import javax.swing.*;
 
@@ -37,6 +41,10 @@ public final class MockUtils {
         try (var ui = Mockito.mockConstruction(type)) {
             consumer.accept(ui);
         }
+    }
+
+    public static <T> MockedStatic<T> spyStatic(Class<T> type) {
+        return Mockito.mockStatic(type, withSettings().defaultAnswer(Answers.CALLS_REAL_METHODS));
     }
 
 }
