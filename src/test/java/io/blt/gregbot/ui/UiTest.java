@@ -8,8 +8,12 @@
 
 package io.blt.gregbot.ui;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static io.blt.test.MockUtils.captureSwingInvokeLaterWhile;
 import static io.blt.test.MockUtils.doWithMockedConstructor;
@@ -31,6 +35,24 @@ class UiTest {
                 assertThat(ctor.constructed())
                         .hasSize(1);
             });
+        }
+
+        static Stream<Arguments> shouldSetPropertiesToSupportMacOs() {
+            return Stream.of(
+                    Arguments.of("apple.laf.useScreenMenuBar", "true"),
+                    Arguments.of("apple.awt.application.name", "mock-project-name")
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource
+        void shouldSetPropertiesToSupportMacOs(String property, String expected) {
+            Ui.start();
+
+            var result = System.getProperty(property);
+
+            assertThat(result)
+                    .isEqualTo(expected);
         }
 
     }
