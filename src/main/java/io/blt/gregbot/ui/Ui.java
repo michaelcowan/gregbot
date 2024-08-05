@@ -9,6 +9,7 @@
 package io.blt.gregbot.ui;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
+import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ui.forms.MainForm;
 import io.blt.gregbot.ui.forms.SplashScreen;
 
@@ -17,6 +18,9 @@ import javax.swing.*;
 public class Ui {
 
     public static void start() {
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("apple.awt.application.name", ApplicationProperties.name());
+        
         SwingUtilities.invokeLater(Ui::new);
     }
 
