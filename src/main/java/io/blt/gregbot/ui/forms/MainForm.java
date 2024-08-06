@@ -43,6 +43,9 @@ public class MainForm extends JFrame {
         var file = menuBar.add(new JMenu("File"));
         file.add(buildMenuItemWithAction("Exit", e -> sendWindowClosingEvent()));
 
+        var help = menuBar.add(new JMenu("Help"));
+        help.add(buildMenuItemWithAction("About", e -> new About().setVisible(true)));
+
         return menuBar;
     }
 
