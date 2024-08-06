@@ -10,8 +10,10 @@ package io.blt.gregbot.ui;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import io.blt.gregbot.ApplicationProperties;
+import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.forms.MainForm;
 import io.blt.gregbot.ui.forms.SplashScreen;
+import java.awt.*;
 
 import javax.swing.*;
 
@@ -20,7 +22,11 @@ public class Ui {
     public static void start() {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.application.name", ApplicationProperties.name());
-        
+
+        if (Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
+            Taskbar.getTaskbar().setIconImage(ApplicationResources.largestIcon());
+        }
+
         SwingUtilities.invokeLater(Ui::new);
     }
 

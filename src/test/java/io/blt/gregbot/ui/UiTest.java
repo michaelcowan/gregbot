@@ -8,6 +8,8 @@
 
 package io.blt.gregbot.ui;
 
+import io.blt.gregbot.ApplicationResources;
+import io.blt.test.MockUi;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,22 +20,28 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static io.blt.test.MockUtils.captureSwingInvokeLaterWhile;
 import static io.blt.test.MockUtils.doWithMockedConstructor;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-class UiTest {
+import java.awt.*;
+
+class UiTest extends MockUi {
 
     @Nested
     class Start {
 
         @Test
         void shouldUseInvokeLaterToCallUiConstructor() {
-            var invokeLater = captureSwingInvokeLaterWhile(Ui::start)
-                    .getValue();
+            doWithMockedUi(() -> {
+                var invokeLater = captureSwingInvokeLaterWhile(Ui::start)
+                        .getValue();
 
-            doWithMockedConstructor(Ui.class, ctor -> {
-                invokeLater.run();
+                doWithMockedConstructor(Ui.class, ctor -> {
+                    invokeLater.run();
 
-                assertThat(ctor.constructed())
-                        .hasSize(1);
+                    assertThat(ctor.constructed())
+                            .hasSize(1);
+                });
             });
         }
 
@@ -47,12 +55,27 @@ class UiTest {
         @ParameterizedTest
         @MethodSource
         void shouldSetPropertiesToSupportMacOs(String property, String expected) {
-            Ui.start();
+            doWithMockedUi(() -> {
+                Ui.start();
 
-            var result = System.getProperty(property);
+                var result = System.getProperty(property);
 
-            assertThat(result)
-                    .isEqualTo(expected);
+                assertThat(result)
+                        .isEqualTo(expected);
+            });
+        }
+
+        @Test
+        void shouldSetIconImageWhenSupported() {
+            doWithMockedUi(() -> {
+               when(mockTaskbar.isSupported(Taskbar.Feature.ICON_IMAGE))
+                       .thenReturn(true);
+
+               Ui.start();
+
+               verify(mockTaskbar)
+                       .setIconImage(ApplicationResources.largestIcon());
+            });
         }
 
     }
