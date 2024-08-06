@@ -22,6 +22,7 @@ public class Ui {
     public static void start() {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.application.name", ApplicationProperties.name());
+        System.setProperty("apple.awt.application.appearance", "system");
 
         if (Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
             Taskbar.getTaskbar().setIconImage(ApplicationResources.largestIcon());

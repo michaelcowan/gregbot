@@ -48,7 +48,8 @@ class UiTest extends MockUi {
         static Stream<Arguments> shouldSetPropertiesToSupportMacOs() {
             return Stream.of(
                     Arguments.of("apple.laf.useScreenMenuBar", "true"),
-                    Arguments.of("apple.awt.application.name", "mock-project-name")
+                    Arguments.of("apple.awt.application.name", "mock-project-name"),
+                    Arguments.of("apple.awt.application.appearance", "system")
             );
         }
 
