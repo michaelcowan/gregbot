@@ -60,6 +60,8 @@ public class About extends JDialog {
         contentPane.registerKeyboardAction(e -> dispose(),
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        setVisible(true);
     }
 
     public void createUIComponents() {
