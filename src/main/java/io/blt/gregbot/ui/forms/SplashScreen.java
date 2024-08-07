@@ -9,18 +9,15 @@
 package io.blt.gregbot.ui.forms;
 
 import io.blt.gregbot.ApplicationProperties;
+import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.components.ScaledImagePanel;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
 import static io.blt.gregbot.ui.utils.AwtUtils.screenSize;
-import static java.util.Objects.requireNonNull;
 
 import javax.swing.*;
 
@@ -76,16 +73,9 @@ public class SplashScreen extends JDialog {
     private void createUIComponents() {
         var desiredWidthAndHeight = (int) scaleDimension(screenSize(), 0.3).getWidth();
 
-        scaledImagePanel = new ScaledImagePanel(
-                loadSplashImage("2048.png"), desiredWidthAndHeight, desiredWidthAndHeight);
-    }
+        var image = ApplicationResources.getResourceAsImage(splashPath);
 
-    private BufferedImage loadSplashImage(String resource) {
-        try {
-            return ImageIO.read(requireNonNull(SplashScreen.class.getResource(splashPath + "/" + resource)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        scaledImagePanel = new ScaledImagePanel(image, desiredWidthAndHeight, desiredWidthAndHeight);
     }
 
     /**
