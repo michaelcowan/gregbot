@@ -47,7 +47,7 @@
         <assertj.version>3.26.3</assertj.version>
         <blt-assertj.version>1.0.2</blt-assertj.version>
         <blt-core.version>1.1.1</blt-core.version>
-        <commons-lang3.version>3.15.0</commons-lang3.version>
+        <commons-lang3.version>3.16.0</commons-lang3.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <httpcore5.version>5.2.5</httpcore5.version>
         <jackson.version>2.17.2</jackson.version>
