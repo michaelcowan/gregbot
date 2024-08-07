@@ -23,7 +23,7 @@ public class Ui {
     Ui() {
         configureLookAndFeel();
 
-        new SplashScreen("splash/octogreg", 1500)
+        new SplashScreen("/splash/octogreg/2048.png", 1500)
                 .setVisible(true);
 
         var mainForm = new MainForm();
