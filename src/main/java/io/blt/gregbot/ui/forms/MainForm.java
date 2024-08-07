@@ -8,12 +8,12 @@
 
 package io.blt.gregbot.ui.forms;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.util.Obj;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
 import static io.blt.gregbot.ui.utils.AwtUtils.screenSize;
@@ -41,10 +41,33 @@ public class MainForm extends JFrame {
         var menuBar = new JMenuBar();
 
         var file = menuBar.add(new JMenu("File"));
-        file.add(buildMenuItemWithAction("Exit", e -> sendWindowClosingEvent()));
-
         var help = menuBar.add(new JMenu("Help"));
-        help.add(buildMenuItemWithAction("About", e -> new About().setVisible(true)));
+
+        if (!SystemInfo.isMacOS) {
+            file.add(buildMenuItemWithAction("Exit", e -> {
+                if (shouldExit()) {
+                    System.exit(0);
+                }
+            }));
+
+            help.add(buildMenuItemWithAction("About", e -> new About()));
+        }
+
+        var desktop = Desktop.getDesktop();
+
+        if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+            desktop.setAboutHandler(e -> new About());
+        }
+
+        if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+            desktop.setQuitHandler((e, response) -> {
+                if (shouldExit()) {
+                    response.performQuit();
+                } else {
+                    response.cancelQuit();
+                }
+            });
+        }
 
         return menuBar;
     }
@@ -53,8 +76,9 @@ public class MainForm extends JFrame {
         return Obj.poke(new JMenuItem(text), i -> i.addActionListener(action));
     }
 
-    private void sendWindowClosingEvent() {
-        processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    private boolean shouldExit() {
+        // TODO Add popup and condition around exiting
+        return true;
     }
 
     {
