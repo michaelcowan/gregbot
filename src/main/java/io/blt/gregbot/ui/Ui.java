@@ -13,13 +13,21 @@ import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.forms.MainForm;
 import io.blt.gregbot.ui.forms.SplashScreen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import javax.swing.*;
 
 public class Ui {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Ui.class);
+
     public static void start() {
+        LOG.info("Starting {} {}",
+                ApplicationProperties.name(),
+                ApplicationProperties.version());
+
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.application.name", ApplicationProperties.name());
         System.setProperty("apple.awt.application.appearance", "system");
