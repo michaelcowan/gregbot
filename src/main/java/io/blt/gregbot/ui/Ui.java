@@ -13,8 +13,8 @@ import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.forms.MainForm;
 import io.blt.gregbot.ui.forms.SplashScreen;
-import java.awt.*;
 
+import java.awt.*;
 import javax.swing.*;
 
 public class Ui {

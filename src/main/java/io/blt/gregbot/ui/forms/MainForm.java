@@ -12,12 +12,12 @@ import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.util.Obj;
-import java.awt.*;
-import java.awt.event.ActionListener;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
 import static io.blt.gregbot.ui.utils.AwtUtils.screenSize;
 
+import java.awt.*;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class MainForm extends JFrame {

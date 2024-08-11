@@ -8,12 +8,13 @@
 
 package io.blt.gregbot;
 
-import java.awt.*;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import static io.blt.test.AssertUtils.assertValidUtilityClass;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.awt.*;
 
 class ApplicationResourcesTest {
 

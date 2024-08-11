@@ -11,9 +11,9 @@ package io.blt.gregbot.ui.forms;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.components.ScaledImagePanel;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 

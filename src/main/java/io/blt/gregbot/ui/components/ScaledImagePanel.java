@@ -9,7 +9,6 @@
 package io.blt.gregbot.ui.components;
 
 import java.awt.*;
-
 import javax.swing.*;
 
 public class ScaledImagePanel extends JPanel {

@@ -11,8 +11,10 @@
           <emptyLine />
           <package name="" withSubpackages="true" static="true" />
           <emptyLine />
+          <package name="java.awt" withSubpackages="true" static="false" />
           <package name="javax.swing" withSubpackages="true" static="false" />
           <emptyLine />
+          <package name="static java.awt" withSubpackages="true" static="false" />
           <package name="static javax.swing" withSubpackages="true" static="false" />
         </value>
       </option>

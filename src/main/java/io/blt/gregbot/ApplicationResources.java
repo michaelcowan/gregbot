@@ -8,11 +8,11 @@
 
 package io.blt.gregbot;
 
-import java.awt.*;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import java.awt.*;
 import javax.swing.*;
 
 public final class ApplicationResources {

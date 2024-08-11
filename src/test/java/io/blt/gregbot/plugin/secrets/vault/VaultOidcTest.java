@@ -11,7 +11,6 @@ package io.blt.gregbot.plugin.secrets.vault;
 import com.bettercloud.vault.VaultException;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.blt.gregbot.plugin.secrets.SecretException;
-import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -41,6 +40,8 @@ import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+
+import java.awt.*;
 
 @WireMockTest(proxyMode = true)
 @ExtendWith(MockitoExtension.class)

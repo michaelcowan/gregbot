@@ -8,7 +8,6 @@
 
 package io.blt.gregbot.ui.utils;
 
-import java.awt.*;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +24,8 @@ import static io.blt.test.AssertUtils.assertValidUtilityClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.awt.*;
 
 @ExtendWith(MockitoExtension.class)
 class AwtUtilsTest {
