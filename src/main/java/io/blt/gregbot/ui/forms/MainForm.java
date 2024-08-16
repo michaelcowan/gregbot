@@ -11,6 +11,7 @@ package io.blt.gregbot.ui.forms;
 import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
+import io.blt.gregbot.ui.components.LogbackPane;
 import io.blt.util.Obj;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
@@ -23,6 +24,7 @@ import javax.swing.*;
 public class MainForm extends JFrame {
 
     private JPanel contentPane;
+    private LogbackPane logbackPane;
 
     public MainForm() {
         setJMenuBar(buildMenuBar());
@@ -35,6 +37,8 @@ public class MainForm extends JFrame {
         setTitle(ApplicationProperties.name());
         setSize(scaleDimension(screenSize(), 0.9));
         setLocationRelativeTo(null);
+
+        logbackPane.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
     }
 
     private JMenuBar buildMenuBar() {
@@ -98,6 +102,12 @@ public class MainForm extends JFrame {
     private void $$$setupUI$$$() {
         contentPane = new JPanel();
         contentPane.setLayout(new GridBagLayout());
+        logbackPane = new LogbackPane();
+        GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        contentPane.add(logbackPane, gbc);
     }
 
     /**

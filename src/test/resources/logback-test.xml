@@ -1,0 +1,21 @@
+<!--
+  ~ Copyright (c) 2024 Mike Cowan.
+  ~
+  ~ This source code is subject to the terms of the GNU General Public
+  ~ License, version 3. If a copy of the GPL was not distributed with this
+  ~ file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+  -->
+
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="off">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

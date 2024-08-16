@@ -29,8 +29,16 @@
         </encoder>
     </appender>
 
-    <logger name="io.blt.gregbot" level="info">
+    <appender name="PANEL" class="io.blt.gregbot.ui.logging.DocumentAppender">
+        <lineLimit>4000</lineLimit>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="io.blt.gregbot" level="trace">
         <appender-ref ref="ROLLING"/>
+        <appender-ref ref="PANEL"/>
     </logger>
 
     <root level="error">
