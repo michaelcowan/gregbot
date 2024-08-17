@@ -10,7 +10,11 @@ package io.blt.gregbot;
 
 import io.blt.gregbot.ui.Ui;
 
-public class Main {
+public final class Main {
+
+    private Main() {
+        throw new IllegalAccessError("Utility class should be accessed statically and never constructed");
+    }
 
     public static void main(String[] args) {
         Ui.start();

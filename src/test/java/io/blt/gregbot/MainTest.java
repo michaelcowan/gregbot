@@ -14,8 +14,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.blt.test.AssertUtils.assertValidUtilityClass;
+
 @ExtendWith(MockitoExtension.class)
 class MainTest {
+
+    @Test
+    void shouldBeValidUtilityClass() throws NoSuchMethodException {
+        assertValidUtilityClass(Main.class);
+    }
 
     @Test
     void shouldCallUiStart() {
