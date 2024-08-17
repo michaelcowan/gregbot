@@ -36,7 +36,7 @@
         </layout>
     </appender>
 
-    <logger name="io.blt.gregbot" level="trace">
+    <logger name="io.blt.gregbot" level="info">
         <appender-ref ref="ROLLING"/>
         <appender-ref ref="PANEL"/>
     </logger>
