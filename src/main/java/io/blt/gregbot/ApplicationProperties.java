@@ -15,7 +15,7 @@ import java.util.Properties;
 
 public final class ApplicationProperties {
 
-    private static Properties PROPERTIES;
+    private static Properties properties;
 
     private ApplicationProperties() {
         throw new IllegalAccessError("Utility class should be accessed statically and never constructed");
@@ -38,10 +38,10 @@ public final class ApplicationProperties {
     }
 
     public static Properties properties() {
-        if (PROPERTIES == null) {
-            PROPERTIES = loadProperties("/application.properties");
+        if (properties == null) {
+            properties = loadProperties("/application.properties");
         }
-        return PROPERTIES;
+        return properties;
     }
 
     public static Properties loadProperties(String name) {
