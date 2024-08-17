@@ -64,7 +64,7 @@ public class SplashScreen extends JDialog {
             try {
                 Thread.sleep(timeoutInMillis);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
             }
             dispose();
         }).start();
