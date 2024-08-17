@@ -13,7 +13,7 @@ import javax.swing.*;
 
 public class ScaledImagePanel extends JPanel {
 
-    private final Image image;
+    private final ImageIcon imageIcon;
 
     private final int desiredWidth;
     private final int desiredHeight;
@@ -22,7 +22,7 @@ public class ScaledImagePanel extends JPanel {
         this.desiredWidth = desiredWidth;
         this.desiredHeight = desiredHeight;
 
-        this.image = scaleImage(image);
+        this.imageIcon = new ImageIcon(scaleImage(image));
 
         setPreferredSizeToMatchImage();
     }
@@ -35,7 +35,7 @@ public class ScaledImagePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.drawImage(image, 0, 0, desiredWidth, desiredHeight, this);
+        g.drawImage(imageIcon.getImage(), 0, 0, desiredWidth, desiredHeight, this);
     }
 
     private Image scaleImage(Image image) {
