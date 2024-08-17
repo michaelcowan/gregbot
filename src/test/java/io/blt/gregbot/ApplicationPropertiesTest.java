@@ -120,7 +120,7 @@ class ApplicationPropertiesTest {
                 var result = ApplicationProperties.timestamp();
 
                 assertThat(result)
-                        .isEqualTo("");
+                        .isEmpty();
             });
         }
 
@@ -130,7 +130,7 @@ class ApplicationPropertiesTest {
                 var result = ApplicationProperties.copyright();
 
                 assertThat(result)
-                        .isEqualTo("");
+                        .isEmpty();
             });
         }
 
