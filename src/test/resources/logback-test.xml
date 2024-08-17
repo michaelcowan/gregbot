@@ -1,0 +1,33 @@
+<!--
+  ~ Copyright (c) 2024 Mike Cowan.
+  ~
+  ~ This source code is subject to the terms of the GNU General Public
+  ~ License, version 3. If a copy of the GPL was not distributed with this
+  ~ file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
+  -->
+
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="TEST" class="io.blt.gregbot.ui.logging.DocumentAppender">
+        <lineLimit>3</lineLimit>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>test-pattern %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="test" level="trace">
+        <appender-ref ref="TEST"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="off">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
