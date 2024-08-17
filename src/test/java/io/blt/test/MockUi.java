@@ -8,7 +8,6 @@
 
 package io.blt.test;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -21,11 +20,6 @@ public abstract class MockUi {
 
     @Mock
     protected Taskbar mockTaskbar;
-
-    @BeforeEach
-    void beforeEach() {
-        System.setProperty("java.awt.headless", "true");
-    }
 
     protected void doWithMockedUi(Runnable runnable) {
         try (var taskbar = Mockito.mockStatic(Taskbar.class)) {
