@@ -30,7 +30,7 @@ public class MainForm extends JFrame {
         setJMenuBar(buildMenuBar());
         setContentPane(contentPane);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setIconImages(ApplicationResources.icons());
 
