@@ -14,6 +14,18 @@
         </encoder>
     </appender>
 
+    <appender name="TEST" class="io.blt.gregbot.ui.logging.DocumentAppender">
+        <lineLimit>3</lineLimit>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>test-pattern %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="test" level="trace">
+        <appender-ref ref="TEST"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
     <root level="off">
         <appender-ref ref="STDOUT"/>
     </root>

@@ -40,7 +40,7 @@ public class DocumentAppender extends AppenderBase<ILoggingEvent> {
         void updateDocument(Document document);
     }
 
-    private final DefaultStyledDocument document = new DefaultStyledDocument();
+    private final Document document = new DefaultStyledDocument();
     private final List<Listener> listeners = new ArrayList<>();
 
     private final Map<Level, SimpleAttributeSet> styles = Map.of(
@@ -65,9 +65,8 @@ public class DocumentAppender extends AppenderBase<ILoggingEvent> {
      */
     public static void register(String loggerName, String appenderName, Listener listener) {
         if (LoggerFactory.getLogger(loggerName) instanceof Logger logger) {
-            var documentAppender = (DocumentAppender) logger.getAppender(appenderName);
-            if (documentAppender != null) {
-                documentAppender.addListener(listener);
+            if (logger.getAppender(appenderName) instanceof DocumentAppender appender) {
+                appender.addListener(listener);
             }
         }
     }
@@ -90,7 +89,7 @@ public class DocumentAppender extends AppenderBase<ILoggingEvent> {
             document.insertString(document.getLength(), layout.doLayout(event),
                     styles.getOrDefault(event.getLevel(), defaultStyle));
         } catch (BadLocationException ignored) {
-            // noop
+            // Should be unreachable
         }
 
         listeners.forEach(l -> l.updateDocument(document));
