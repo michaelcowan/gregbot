@@ -60,7 +60,7 @@
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
         <jsonassert.version>1.5.3</jsonassert.version>
         <junit.version>5.11.0</junit.version>
-        <logback-classic.version>1.5.6</logback-classic.version>
+        <logback-classic.version>1.5.7</logback-classic.version>
         <mockito.version>5.12.0</mockito.version>
         <vault-driver.version>5.1.0</vault-driver.version>
         <wiremock.version>3.9.1</wiremock.version>
