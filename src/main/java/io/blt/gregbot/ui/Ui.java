@@ -32,9 +32,10 @@ public class Ui {
     }
 
     Ui() {
-        log.info("Starting {} {}",
+        log.info("Starting {} {} built on {}",
                 ApplicationProperties.name(),
-                ApplicationProperties.version());
+                ApplicationProperties.version(),
+                ApplicationProperties.timestamp());
 
         try {
             if (Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
