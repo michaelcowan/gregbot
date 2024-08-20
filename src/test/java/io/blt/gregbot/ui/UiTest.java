@@ -24,8 +24,10 @@ import org.slf4j.LoggerFactory;
 import static io.blt.test.MockUtils.captureSwingInvokeLaterWhile;
 import static io.blt.test.MockUtils.doWithMockedConstructor;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -87,6 +89,19 @@ class UiTest extends MockUi {
 
                 verify(mockTaskbar)
                         .setIconImage(ApplicationResources.largestIcon());
+            });
+        }
+
+        @Test
+        void shouldNotSetIconImageWhenNotSupported() {
+            doWithMockedUi(() -> {
+                when(mockTaskbar.isSupported(Taskbar.Feature.ICON_IMAGE))
+                        .thenReturn(false);
+
+                new Ui();
+
+                verify(mockTaskbar, never())
+                        .setIconImage(any());
             });
         }
 
