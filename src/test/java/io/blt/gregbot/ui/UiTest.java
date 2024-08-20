@@ -16,10 +16,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.blt.test.MockUtils.captureSwingInvokeLaterWhile;
 import static io.blt.test.MockUtils.doWithMockedConstructor;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,21 +37,6 @@ class UiTest extends MockUi {
 
     @Nested
     class Start {
-
-        @Test
-        void shouldUseInvokeLaterToCallUiConstructor() {
-            doWithMockedUi(() -> {
-                var invokeLater = captureSwingInvokeLaterWhile(Ui::start)
-                        .getValue();
-
-                doWithMockedConstructor(Ui.class, ctor -> {
-                    invokeLater.run();
-
-                    assertThat(ctor.constructed())
-                            .hasSize(1);
-                });
-            });
-        }
 
         static Stream<Arguments> shouldSetPropertiesToSupportMacOs() {
             return Stream.of(
@@ -67,16 +60,69 @@ class UiTest extends MockUi {
         }
 
         @Test
+        void shouldUseInvokeLaterToCallUiConstructor() {
+            doWithMockedUi(() -> {
+                var invokeLater = captureSwingInvokeLaterWhile(Ui::start)
+                        .getValue();
+
+                doWithMockedConstructor(Ui.class, ctor -> {
+                    invokeLater.run();
+
+                    assertThat(ctor.constructed())
+                            .hasSize(1);
+                });
+            });
+        }
+
+    }
+
+    @Nested
+    class Constructor {
+
+        @Test
         void shouldSetIconImageWhenSupported() {
             doWithMockedUi(() -> {
-               when(mockTaskbar.isSupported(Taskbar.Feature.ICON_IMAGE))
-                       .thenReturn(true);
+                when(mockTaskbar.isSupported(Taskbar.Feature.ICON_IMAGE))
+                        .thenReturn(true);
 
-               Ui.start();
+                new Ui();
 
-               verify(mockTaskbar)
-                       .setIconImage(ApplicationResources.largestIcon());
+                verify(mockTaskbar)
+                        .setIconImage(ApplicationResources.largestIcon());
             });
+        }
+
+        @Test
+        void shouldNotSetIconImageWhenNotSupported() {
+            doWithMockedUi(() -> {
+                when(mockTaskbar.isSupported(Taskbar.Feature.ICON_IMAGE))
+                        .thenReturn(false);
+
+                new Ui();
+
+                verify(mockTaskbar, never())
+                        .setIconImage(any());
+            });
+        }
+
+        @Test
+        void shouldLogUnexpectedExceptions() {
+            try (var loggerFactory = Mockito.mockStatic(LoggerFactory.class)) {
+                var logger = mock(Logger.class);
+
+                loggerFactory.when(() -> LoggerFactory.getLogger(Ui.class))
+                        .thenReturn(logger);
+
+                // This will inherently throw because the tests are running in headless mode
+                new Ui();
+
+                var exception = ArgumentCaptor.forClass(Exception.class);
+                verify(logger)
+                        .error(eq("Unexpected exception"), exception.capture());
+
+                assertThat(exception.getValue())
+                        .isInstanceOf(HeadlessException.class);
+            }
         }
 
     }
