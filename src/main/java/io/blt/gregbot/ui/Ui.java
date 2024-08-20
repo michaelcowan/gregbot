@@ -21,32 +21,36 @@ import javax.swing.*;
 
 public class Ui {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Ui.class);
+    private final Logger log = LoggerFactory.getLogger(Ui.class);
 
     public static void start() {
-        LOG.info("Starting {} {}",
-                ApplicationProperties.name(),
-                ApplicationProperties.version());
-
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("apple.awt.application.name", ApplicationProperties.name());
         System.setProperty("apple.awt.application.appearance", "system");
-
-        if (Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
-            Taskbar.getTaskbar().setIconImage(ApplicationResources.largestIcon());
-        }
 
         SwingUtilities.invokeLater(Ui::new);
     }
 
     Ui() {
-        configureLookAndFeel();
+        log.info("Starting {} {}",
+                ApplicationProperties.name(),
+                ApplicationProperties.version());
 
-        new SplashScreen("/splash/octogreg/2048.png", 1500)
-                .setVisible(true);
+        try {
+            if (Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                Taskbar.getTaskbar().setIconImage(ApplicationResources.largestIcon());
+            }
 
-        var mainForm = new MainForm();
-        mainForm.setVisible(true);
+            configureLookAndFeel();
+
+            new SplashScreen("/splash/octogreg/2048.png", 1500)
+                    .setVisible(true);
+
+            var mainForm = new MainForm();
+            mainForm.setVisible(true);
+        } catch (Exception e) {
+            log.error("Unexpected exception", e);
+        }
     }
 
     private void configureLookAndFeel() {
