@@ -11,6 +11,8 @@ package io.blt.gregbot.ui.dialogs;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.components.ScaledImagePanel;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
 import static io.blt.gregbot.ui.utils.AwtUtils.screenSize;
@@ -60,14 +62,12 @@ public class SplashScreen extends JDialog {
             }
         });
 
-        new Thread(() -> {
-            try {
-                Thread.sleep(timeoutInMillis);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SwingUtilities.invokeLater(() -> dispose());
             }
-            dispose();
-        }).start();
+        }, timeoutInMillis);
     }
 
     private void createUIComponents() {
