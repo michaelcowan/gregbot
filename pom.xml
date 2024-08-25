@@ -226,7 +226,7 @@
                     <excludes>
                         <exclude>io/blt/gregbot/ui/components/*</exclude>
                         <exclude>io/blt/gregbot/ui/dialogs/*</exclude>
-                        <exclude>io/blt/gregbot/ui/forms/*</exclude>
+                        <exclude>io/blt/gregbot/ui/frames/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
