@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import static io.blt.test.TestUtils.loadAsString;
@@ -27,6 +28,9 @@ import static io.blt.test.TestUtils.streamFieldsOfNestedTypes;
 import static io.blt.test.assertj.AnnotationAssertions.assertHasAnnotation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 
 class PropertiesTest {
 
@@ -42,6 +46,25 @@ class PropertiesTest {
     @MethodSource
     void shouldAnnotateWithValid(Field field) {
         assertHasAnnotation(field, Valid.class);
+    }
+
+    @Test
+    void loadFromJsonFilenameShouldCallInputStreamOverload() throws IOException {
+        try (var mock = Mockito.mockStatic(Properties.class)) {
+            var filename = Properties.class.getResource("full.json").getFile();
+            var expected = mock(Properties.class);
+
+            mock.when(() -> Properties.loadFromJson(any(InputStream.class)))
+                    .thenReturn(expected);
+
+            mock.when(() -> Properties.loadFromJson(anyString()))
+                    .thenCallRealMethod();
+
+            var result = Properties.loadFromJson(filename);
+
+            assertThat(result)
+                    .isEqualTo(expected);
+        }
     }
 
     @ParameterizedTest

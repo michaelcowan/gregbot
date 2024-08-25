@@ -20,6 +20,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -136,6 +137,19 @@ public record Properties(
      */
     public static Properties loadFromJson(InputStream stream) throws IOException {
         return validateAndReturn(MAPPER.readValue(stream, Properties.class));
+    }
+
+    /**
+     * Overload of {@link Properties#loadFromJson(InputStream)} that loads from a file.
+     *
+     * @param filename file to load
+     * @return instance of {@link Properties}
+     * @throws IOException if the file cannot be read or there is a validation failure
+     */
+    public static Properties loadFromJson(String filename) throws IOException {
+        try (var stream = new FileInputStream(filename)) {
+            return loadFromJson(stream);
+        }
     }
 
     private static Properties validateAndReturn(Properties properties) throws IOException {
