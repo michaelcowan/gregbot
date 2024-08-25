@@ -6,12 +6,13 @@
  * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package io.blt.gregbot.ui.forms;
+package io.blt.gregbot.ui.frames;
 
 import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.components.LogbackPane;
+import io.blt.gregbot.ui.dialogs.About;
 import io.blt.util.Obj;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
@@ -21,12 +22,12 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class MainForm extends JFrame {
+public class MainFrame extends JFrame {
 
     private JPanel contentPane;
     private LogbackPane logbackPane;
 
-    public MainForm() {
+    public MainFrame() {
         setJMenuBar(buildMenuBar());
         setContentPane(contentPane);
 
