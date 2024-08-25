@@ -21,11 +21,10 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
 
 /**
  * Represents all properties of the system with non-null and immutable guarantees.
@@ -126,23 +125,17 @@ public record Properties(
      * <p>
      * This method will:
      *     <ol>
-     *         <li>Load the resource file</li>
-     *         <li>Deserialize into {@link Properties} and nested {@code record}s</li>
+     *         <li>Deserialize {@code stream} into {@link Properties} and nested {@code record}s</li>
      *         <li>Perform validation, throwing on failure</li>
      *     </ol>
      * </p>
      *
-     * @param filename resource file to load
+     * @param stream resource file to load
      * @return instance of {@link Properties}
-     * @throws IOException if the file cannot be read or there is a validation fails
+     * @throws IOException if the stream cannot be read or there is a validation failure
      */
-    public static Properties loadFromJson(String filename) throws IOException {
-        try (var stream = Properties.class.getResourceAsStream(filename)) {
-            if (isNull(stream)) {
-                throw new IOException("Cannot read file '" + filename + "'");
-            }
-            return validateAndReturn(MAPPER.readValue(stream, Properties.class));
-        }
+    public static Properties loadFromJson(InputStream stream) throws IOException {
+        return validateAndReturn(MAPPER.readValue(stream, Properties.class));
     }
 
     private static Properties validateAndReturn(Properties properties) throws IOException {

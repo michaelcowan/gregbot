@@ -10,6 +10,7 @@ package io.blt.gregbot.core.properties;
 
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.stream.Stream;
 import org.json.JSONException;
@@ -48,7 +49,7 @@ class PropertiesTest {
             "minimal.json", "full.json"
     })
     void loadFromJsonShouldPassValidationFor(String filename) throws IOException {
-        var result = Properties.loadFromJson(filename);
+        var result = Properties.loadFromJson(fileToStream(filename));
 
         assertThat(result).isNotNull();
     }
@@ -58,12 +59,12 @@ class PropertiesTest {
             "doesnt.exist", "empty.txt", "empty.json"
     })
     void loadFromJsonShouldFailValidationFor(String filename) {
-        assertThatException().isThrownBy(() -> Properties.loadFromJson(filename));
+        assertThatException().isThrownBy(() -> Properties.loadFromJson(fileToStream(filename)));
     }
 
     @Test
     void loadFromJsonShouldCreateEmptyMaps() throws IOException {
-        var result = Properties.loadFromJson("minimal.json");
+        var result = Properties.loadFromJson(fileToStream("minimal.json"));
 
         assertThat(result.secrets()).isNotNull().isEmpty();
         assertThat(result.environments()).isNotNull().isEmpty();
@@ -73,7 +74,7 @@ class PropertiesTest {
 
     @Test
     void loadFromJsonShouldCreateUnmodifiableMaps() throws IOException {
-        var result = Properties.loadFromJson("full.json");
+        var result = Properties.loadFromJson(fileToStream("full.json"));
 
         assertThat(result.environments()).isUnmodifiable();
         assertThat(result.collections().get("Skynet").requests()).isUnmodifiable();
@@ -81,7 +82,7 @@ class PropertiesTest {
 
     @Test
     void loadFromJsonShouldMaintainMapOrder() throws IOException {
-        var result = Properties.loadFromJson("full.json");
+        var result = Properties.loadFromJson(fileToStream("full.json"));
 
         assertThat(result.environments().keySet())
                 .containsExactly("Cyberdyne Local", "Cyberdyne Stage", "Cyberdyne Prod");
@@ -99,7 +100,7 @@ class PropertiesTest {
 
     @Test
     void loadFromJsonShouldCreateEmptyCollections() throws IOException {
-        var result = Properties.loadFromJson("full.json");
+        var result = Properties.loadFromJson(fileToStream("full.json"));
         var layout = result.collections().get("Skynet").layout();
 
         assertThat(layout.folders().get("Emergency").folders()).isNotNull().isEmpty();
@@ -107,7 +108,7 @@ class PropertiesTest {
 
     @Test
     void loadFromJsonShouldCreateUnmodifiableCollections() throws IOException {
-        var result = Properties.loadFromJson("full.json");
+        var result = Properties.loadFromJson(fileToStream("full.json"));
         var layout = result.collections().get("Skynet").layout();
 
         assertThat(layout.requests()).isUnmodifiable();
@@ -118,11 +119,15 @@ class PropertiesTest {
     void loadFromJsonShouldProduceObjectEqualToExpectedJson() throws IOException, JSONException {
         var expected = loadAsString(getClass(), "full-expected.json");
 
-        var properties = Properties.loadFromJson("full.json");
+        var properties = Properties.loadFromJson(fileToStream("full.json"));
 
         var json = pojoToJson(properties);
 
         JSONAssert.assertEquals(expected, json, true);
+    }
+
+    private InputStream fileToStream(String filename) {
+        return Properties.class.getResourceAsStream(filename);
     }
 
 }
