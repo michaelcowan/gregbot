@@ -6,7 +6,7 @@
  * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package io.blt.gregbot.ui.forms;
+package io.blt.gregbot.ui.dialogs;
 
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;

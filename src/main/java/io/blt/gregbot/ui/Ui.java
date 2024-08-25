@@ -11,8 +11,8 @@ package io.blt.gregbot.ui;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
+import io.blt.gregbot.ui.dialogs.SplashScreen;
 import io.blt.gregbot.ui.forms.MainForm;
-import io.blt.gregbot.ui.forms.SplashScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

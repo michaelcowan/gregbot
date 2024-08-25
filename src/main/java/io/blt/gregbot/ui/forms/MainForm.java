@@ -12,6 +12,7 @@ import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.components.LogbackPane;
+import io.blt.gregbot.ui.dialogs.About;
 import io.blt.util.Obj;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
