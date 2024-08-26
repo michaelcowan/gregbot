@@ -48,7 +48,7 @@
               <editable value="false"/>
             </properties>
           </component>
-          <component id="a1631" class="io.blt.gregbot.ui.components.ScaledImagePanel" binding="scaledImagePanel" custom-create="true">
+          <component id="a1631" class="io.blt.gregbot.ui.panels.ScaledImagePanel" binding="scaledImagePanel" custom-create="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
               <gridbag weightx="0.0" weighty="0.0"/>
