@@ -10,7 +10,7 @@ package io.blt.gregbot.ui.dialogs;
 
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
-import io.blt.gregbot.ui.components.ScaledImagePanel;
+import io.blt.gregbot.ui.panels.ScaledImagePanel;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

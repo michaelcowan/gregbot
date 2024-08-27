@@ -7,7 +7,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="25b85" class="io.blt.gregbot.ui.components.ScaledImagePanel" binding="scaledImagePanel" custom-create="true">
+      <component id="25b85" class="io.blt.gregbot.ui.panels.ScaledImagePanel" binding="scaledImagePanel" custom-create="true">
         <constraints border-constraint="Center"/>
         <properties/>
       </component>

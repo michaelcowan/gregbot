@@ -6,7 +6,7 @@
  * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package io.blt.gregbot.ui.components;
+package io.blt.gregbot.ui.panels;
 
 import java.awt.*;
 import javax.swing.*;
