@@ -67,7 +67,7 @@
 
         <jacoco-plugin.version>0.8.12</jacoco-plugin.version>
         <assembly-plugin.version>3.7.1</assembly-plugin.version>
-        <surefire-plugin.version>3.4.0</surefire-plugin.version>
+        <surefire-plugin.version>3.5.0</surefire-plugin.version>
     </properties>
 
     <dependencies>
