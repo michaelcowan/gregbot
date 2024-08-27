@@ -14,8 +14,6 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import io.blt.util.Obj;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.LoggerFactory;
 
@@ -32,16 +30,7 @@ import javax.swing.text.SimpleAttributeSet;
  */
 public class DocumentAppender extends AppenderBase<ILoggingEvent> {
 
-    /**
-     * Called when {@code Document} is updated and should be rendered
-     */
-    @FunctionalInterface
-    public interface Listener {
-        void updateDocument(Document document);
-    }
-
     private final Document document = new DefaultStyledDocument();
-    private final List<Listener> listeners = new ArrayList<>();
 
     private final Map<Level, SimpleAttributeSet> styles = Map.of(
             Level.ERROR, style(new Color(0xFF, 0x3B, 0x30)),
@@ -56,19 +45,19 @@ public class DocumentAppender extends AppenderBase<ILoggingEvent> {
             p -> p.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n"));
 
     /**
-     * Adds a {@link Listener} to the specified appender if the appender is an instance of {@code DocumentAppender},
-     * otherwise will no-op.
+     * Returns a manged {@link Document} of the specified {@code DocumentAppender}, otherwise {@code null}.
      *
      * @param loggerName   logger name e.g,. from {@code logback.xml} {@code <logger name="io.blt.gregbot" ...>}
      * @param appenderName appender name e.g,. from {@code logback.xml} {@code <appender name="PANEL" ...>}
-     * @param listener     listener instance to add
+     * @return {@link Document} instance or {@code null} if logger and/or appender is not found
      */
-    public static void register(String loggerName, String appenderName, Listener listener) {
+    public static Document document(String loggerName, String appenderName) {
         if (LoggerFactory.getLogger(loggerName) instanceof Logger logger) {
             if (logger.getAppender(appenderName) instanceof DocumentAppender appender) {
-                appender.addListener(listener);
+                return appender.document;
             }
         }
+        return null;
     }
 
     @Override
@@ -91,8 +80,6 @@ public class DocumentAppender extends AppenderBase<ILoggingEvent> {
         } catch (BadLocationException ignored) {
             // Should be unreachable
         }
-
-        listeners.forEach(l -> l.updateDocument(document));
     }
 
     public int getLineLimit() {
@@ -109,11 +96,6 @@ public class DocumentAppender extends AppenderBase<ILoggingEvent> {
 
     public void setLayout(PatternLayout layout) {
         this.layout = layout;
-    }
-
-    private void addListener(Listener listener) {
-        listeners.add(listener);
-        listener.updateDocument(document);
     }
 
     private static SimpleAttributeSet style(Color foreground) {

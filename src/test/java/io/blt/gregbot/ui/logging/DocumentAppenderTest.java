@@ -9,8 +9,6 @@
 package io.blt.gregbot.ui.logging;
 
 import ch.qos.logback.classic.Logger;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +24,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 class DocumentAppenderTest {
-
-    TestableListener listener = new TestableListener();
 
     @AfterEach
     void afterEach() {
@@ -54,65 +50,53 @@ class DocumentAppenderTest {
             "test, UNKNOWN",
             "test, STDOUT"
     })
-    void registerShouldNoOpOnUnknownLoggerOrAppenderOrWrongAppenderType(String loggerName, String appenderName) {
+    void documentShouldReturnNullOnUnknownLoggerOrAppenderOrWrongAppenderType(String loggerName, String appenderName) {
         var logger = LoggerFactory.getLogger("test");
 
         logger.info("test-message-before-register");
-        DocumentAppender.register(loggerName, appenderName, listener);
+        var document = DocumentAppender.document(loggerName, appenderName);
         logger.info("test-message-after-register");
 
-        assertThat(listener.documentTexts)
-                .isEmpty();
+        assertThat(document)
+                .isNull();
     }
 
     @Test
-    void shouldRegisterAndCallListenerWhenLoggingOccurs() {
+    void shouldUpdateDocumentWhenLoggingOccurs() {
         var logger = LoggerFactory.getLogger("test");
 
         logger.info("test-message-before-register");
-        DocumentAppender.register("test", "TEST", listener);
+        var document = DocumentAppender.document("test", "TEST");
         logger.info("test-message-after-register");
 
-        assertThat(listener.documentTexts)
-                .containsExactly(
-                        "test-pattern test-message-before-register%n"
-                                .formatted(),
-                        "test-pattern test-message-before-register%ntest-pattern test-message-after-register%n"
-                                .formatted());
+        assertThat(asText(document))
+                .isEqualTo("test-pattern test-message-before-register%ntest-pattern test-message-after-register%n"
+                        .formatted());
     }
 
     @Test
     void shouldGenerateDocumentNotExceedingLineLimit() {
-        DocumentAppender.register("test", "TEST", listener);
+        var document = DocumentAppender.document("test", "TEST");
 
         var logger = LoggerFactory.getLogger("test");
         IntStream.rangeClosed(1, 10)
                 .forEach(i -> logger.info("log {}", i));
 
-        assertThat(listener.documentTexts)
-                .extracting(this::countLines)
-                .allMatch(length -> length <= 3);
-
-        assertThat(listener.documentTexts)
-                .last()
+        assertThat(asText(document))
                 .asString()
                 .isEqualTo("test-pattern log 8%ntest-pattern log 9%ntest-pattern log 10%n"
                         .formatted());
     }
 
-    static class TestableListener implements DocumentAppender.Listener {
-
-        final List<String> documentTexts = new ArrayList<>();
-
-        @Override
-        public void updateDocument(Document document) {
-            var length = document.getLength();
-            try {
-                documentTexts.add(document.getText(0, length));
-            } catch (BadLocationException e) {
-                fail("Cannot extract document text", e);
-            }
+    private String asText(Document document) {
+        assertThat(document)
+                .isNotNull();
+        try {
+            return document.getText(0, document.getLength());
+        } catch (BadLocationException e) {
+            fail(e);
         }
+        return null;
     }
 
     private DocumentAppender findDocumentAppender() {

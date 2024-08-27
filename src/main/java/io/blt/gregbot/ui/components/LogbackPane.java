@@ -11,20 +11,12 @@ package io.blt.gregbot.ui.components;
 import io.blt.gregbot.ui.logging.DocumentAppender;
 
 import javax.swing.*;
-import javax.swing.text.Document;
 
-public class LogbackPane extends JTextPane implements DocumentAppender.Listener {
+public class LogbackPane extends JTextPane {
 
     public LogbackPane() {
-        DocumentAppender.register("io.blt.gregbot", "PANEL", this);
+        setDocument(DocumentAppender.document("io.blt.gregbot", "PANEL"));
         setEditable(false);
     }
 
-    @Override
-    public void updateDocument(Document document) {
-        SwingUtilities.invokeLater(() -> {
-            setDocument(document);
-            setCaretPosition(document.getLength());
-        });
-    }
 }
