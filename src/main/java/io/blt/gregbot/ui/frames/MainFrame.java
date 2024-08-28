@@ -11,9 +11,11 @@ package io.blt.gregbot.ui.frames;
 import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
-import io.blt.gregbot.ui.components.LogbackPane;
 import io.blt.gregbot.ui.dialogs.About;
+import io.blt.gregbot.ui.panels.LogPanel;
 import io.blt.util.Obj;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.blt.gregbot.ui.utils.AwtUtils.scaleDimension;
 import static io.blt.gregbot.ui.utils.AwtUtils.screenSize;
@@ -24,8 +26,11 @@ import javax.swing.*;
 
 public class MainFrame extends JFrame {
 
+    private final Logger log = LoggerFactory.getLogger(MainFrame.class);
+
     private JPanel contentPane;
-    private LogbackPane logbackPane;
+    private JSplitPane feedbackSplitPane;
+    private JTabbedPane feedbackTabbedPane;
 
     public MainFrame() {
         setJMenuBar(buildMenuBar());
@@ -38,8 +43,6 @@ public class MainFrame extends JFrame {
         setTitle(ApplicationProperties.name());
         setSize(scaleDimension(screenSize(), 0.9));
         setLocationRelativeTo(null);
-
-        logbackPane.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
     }
 
     private JMenuBar buildMenuBar() {
@@ -103,12 +106,32 @@ public class MainFrame extends JFrame {
     private void $$$setupUI$$$() {
         contentPane = new JPanel();
         contentPane.setLayout(new GridBagLayout());
-        logbackPane = new LogbackPane();
+        feedbackSplitPane = new JSplitPane();
+        feedbackSplitPane.setOrientation(0);
+        feedbackSplitPane.setResizeWeight(0.8);
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        contentPane.add(logbackPane, gbc);
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        contentPane.add(feedbackSplitPane, gbc);
+        feedbackTabbedPane = new JTabbedPane();
+        feedbackSplitPane.setRightComponent(feedbackTabbedPane);
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new BorderLayout(0, 0));
+        feedbackTabbedPane.addTab("Log", panel1);
+        final LogPanel nestedForm1 = new LogPanel();
+        panel1.add(nestedForm1.$$$getRootComponent$$$(), BorderLayout.CENTER);
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new BorderLayout(0, 0));
+        feedbackSplitPane.setLeftComponent(panel2);
+        final JLabel label1 = new JLabel();
+        label1.setHorizontalAlignment(0);
+        label1.setHorizontalTextPosition(11);
+        label1.setText("main area");
+        panel2.add(label1, BorderLayout.CENTER);
     }
 
     /**
