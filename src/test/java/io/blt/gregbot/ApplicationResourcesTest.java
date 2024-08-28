@@ -8,13 +8,18 @@
 
 package io.blt.gregbot;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import io.blt.gregbot.ApplicationResources.ToolIcon;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static io.blt.test.AssertUtils.assertValidUtilityClass;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.awt.*;
+import javax.swing.*;
 
 class ApplicationResourcesTest {
 
@@ -69,4 +74,29 @@ class ApplicationResourcesTest {
                 .isEqualTo(512);
     }
 
+    @ParameterizedTest
+    @EnumSource(ToolIcon.class)
+    void toolIconShouldBe18x18(ToolIcon toolIcon) {
+        var result = ApplicationResources.toolIcon(toolIcon);
+
+        assertThat(result)
+                .extracting(Icon::getIconWidth, Icon::getIconHeight)
+                .containsExactly(18, 18);
+    }
+
+    @ParameterizedTest
+    @EnumSource(ToolIcon.class)
+    void toolIconShouldApplyColorMatchingButtonForeground(ToolIcon toolIcon) {
+        var expected = new FlatSVGIcon.ColorFilter(color -> UIManager.getColor("Button.foreground"));
+
+        var result = ApplicationResources.toolIcon(toolIcon);
+
+        assertThat(result)
+                .isInstanceOf(FlatSVGIcon.class);
+
+        assertThat((FlatSVGIcon) result)
+                .extracting(FlatSVGIcon::getColorFilter)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
 }

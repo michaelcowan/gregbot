@@ -8,6 +8,7 @@
 
 package io.blt.gregbot;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -16,6 +17,19 @@ import java.awt.*;
 import javax.swing.*;
 
 public final class ApplicationResources {
+
+    public enum ToolIcon {
+        TRASH("icons/tools/trash.svg"),
+        WRAP("icons/tools/wrap.svg"),
+        ALIGN_BOTTOM("icons/tools/align-bottom.svg"),
+        ;
+
+        private final String filename;
+
+        ToolIcon(String filename) {
+            this.filename = filename;
+        }
+    }
 
     private static final List<String> ICONS = List.of(
             "/icons/512.png",
@@ -27,6 +41,12 @@ public final class ApplicationResources {
 
     private ApplicationResources() {
         throw new IllegalAccessError("Utility class should be accessed statically and never constructed");
+    }
+
+    public static Icon toolIcon(ToolIcon toolIcon) {
+        return new FlatSVGIcon(toolIcon.filename, 18, 18)
+                .setColorFilter(new FlatSVGIcon.ColorFilter(
+                        color -> UIManager.getColor("Button.foreground")));
     }
 
     public static List<Image> icons() {
