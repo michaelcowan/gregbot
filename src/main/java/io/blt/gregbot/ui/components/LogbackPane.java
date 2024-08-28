@@ -10,6 +10,7 @@ package io.blt.gregbot.ui.components;
 
 import io.blt.gregbot.ui.logging.DocumentAppender;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -17,6 +18,7 @@ import javax.swing.event.DocumentListener;
 public class LogbackPane extends JTextPane {
 
     private boolean autoCaretToBottom = false;
+    private boolean lineWrap = false;
 
     public LogbackPane() {
         setDocument(DocumentAppender.document("io.blt.gregbot", "PANEL"));
@@ -25,8 +27,15 @@ public class LogbackPane extends JTextPane {
         getDocument().addDocumentListener(caretToBottomListener());
     }
 
-    public boolean autoCaretToBottomEnabled() {
-        return autoCaretToBottom;
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return lineWrap ? super.getScrollableTracksViewportWidth() :
+                getUI().getPreferredSize(this).width <= getParent().getSize().width;
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return getUI().getPreferredSize(this);
     }
 
     public void autoCaretToBottom(boolean autoCaretToBottom) {
@@ -34,7 +43,19 @@ public class LogbackPane extends JTextPane {
     }
 
     public void toggleAutoCaretToBottom() {
-        autoCaretToBottom = !autoCaretToBottom;
+        autoCaretToBottom(!autoCaretToBottom);
+    }
+
+    public void lineWrap(boolean lineWrap) {
+        this.lineWrap = lineWrap;
+    }
+
+    public void toggleLineWrap() {
+        lineWrap(!lineWrap);
+    }
+
+    public void setLineWrap(boolean lineWrap) {
+        this.lineWrap = lineWrap;
     }
 
     public void setCaretToBottom() {
