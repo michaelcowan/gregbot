@@ -11,12 +11,59 @@ package io.blt.gregbot.ui.components;
 import io.blt.gregbot.ui.logging.DocumentAppender;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class LogbackPane extends JTextPane {
+
+    private boolean autoCaretToBottom = false;
 
     public LogbackPane() {
         setDocument(DocumentAppender.document("io.blt.gregbot", "PANEL"));
         setEditable(false);
+
+        getDocument().addDocumentListener(caretToBottomListener());
+    }
+
+    public boolean autoCaretToBottomEnabled() {
+        return autoCaretToBottom;
+    }
+
+    public void autoCaretToBottom(boolean autoCaretToBottom) {
+        this.autoCaretToBottom = autoCaretToBottom;
+    }
+
+    public void toggleAutoCaretToBottom() {
+        autoCaretToBottom = !autoCaretToBottom;
+    }
+
+    public void setCaretToBottom() {
+        setCaretPosition(getDocument().getLength());
+    }
+
+    private void setCaretToBottomIfAutoEnabled() {
+        if (autoCaretToBottom) {
+            setCaretToBottom();
+        }
+    }
+
+    private DocumentListener caretToBottomListener() {
+        return new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setCaretToBottomIfAutoEnabled();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setCaretToBottomIfAutoEnabled();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                setCaretToBottomIfAutoEnabled();
+            }
+        };
     }
 
 }
