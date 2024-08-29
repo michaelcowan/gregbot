@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="io.blt.gregbot.ui.panels.LogPanel">
+  <grid id="27dc6" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="820" height="323"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <scrollpane id="216da" binding="scrollPane">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="70a7e" class="io.blt.gregbot.ui.components.LogbackPane" binding="logbackPane">
+            <constraints/>
+          </component>
+        </children>
+      </scrollpane>
+      <toolbar id="915cc" binding="toolbar">
+        <constraints border-constraint="West"/>
+        <properties>
+          <orientation value="1"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="15a7a" class="javax.swing.JToggleButton" binding="lineWrapButton">
+            <constraints/>
+            <properties>
+              <text value=""/>
+              <toolTipText value="Snap to Bottom"/>
+            </properties>
+          </component>
+          <component id="60c69" class="javax.swing.JToggleButton" binding="snapToBottomButton">
+            <constraints/>
+            <properties>
+              <text value=""/>
+              <toolTipText value="Snap to Bottom"/>
+            </properties>
+          </component>
+          <component id="8056" class="javax.swing.JButton" binding="clearAllButton">
+            <constraints/>
+            <properties>
+              <text value=""/>
+              <toolTipText value="Clear All"/>
+            </properties>
+          </component>
+        </children>
+      </toolbar>
+    </children>
+  </grid>
+</form>
