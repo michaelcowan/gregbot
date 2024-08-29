@@ -9,6 +9,7 @@
 package io.blt.gregbot.ui;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
 import io.blt.gregbot.ui.dialogs.SplashScreen;
@@ -41,6 +42,8 @@ public class Ui {
             if (Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
                 Taskbar.getTaskbar().setIconImage(ApplicationResources.largestIcon());
             }
+
+            FlatJetBrainsMonoFont.install();
 
             configureLookAndFeel();
 

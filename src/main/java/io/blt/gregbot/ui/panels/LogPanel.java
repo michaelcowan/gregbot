@@ -8,10 +8,9 @@
 
 package io.blt.gregbot.ui.panels;
 
+import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import io.blt.gregbot.ApplicationResources.ToolIcon;
 import io.blt.gregbot.ui.components.LogbackPane;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static io.blt.gregbot.ApplicationResources.toolIcon;
 
@@ -19,8 +18,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class LogPanel extends JPanel {
-
-    private final Logger log = LoggerFactory.getLogger(LogPanel.class);
 
     private JPanel contentPane;
     private JScrollPane scrollPane;
@@ -31,7 +28,7 @@ public class LogPanel extends JPanel {
     private JToolBar toolbar;
 
     public LogPanel() {
-        logbackPane.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        logbackPane.setFont(new Font(FlatJetBrainsMonoFont.FAMILY, Font.PLAIN, 13));
 
         lineWrapButton.setIcon(toolIcon(ToolIcon.WRAP));
         snapToBottomButton.setIcon(toolIcon(ToolIcon.ALIGN_BOTTOM));

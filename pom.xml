@@ -54,6 +54,7 @@
         <blt-core.version>1.1.1</blt-core.version>
         <commons-lang3.version>3.16.0</commons-lang3.version>
         <flatlaf.version>3.5.1</flatlaf.version>
+        <flatlaf-fonts-jetbrains>2.304</flatlaf-fonts-jetbrains>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <httpcore5.version>5.2.5</httpcore5.version>
         <jackson.version>2.17.2</jackson.version>
@@ -95,6 +96,11 @@
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>
             <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-fonts-jetbrains-mono</artifactId>
+            <version>${flatlaf-fonts-jetbrains}</version>
         </dependency>
         <dependency>
             <groupId>io.blt</groupId>
