@@ -11,6 +11,8 @@ package io.blt.gregbot.ui.frames;
 import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
+import io.blt.gregbot.ui.components.FlatlafThemeToggle;
+import io.blt.gregbot.ui.components.HorizontalGlue;
 import io.blt.gregbot.ui.dialogs.About;
 import io.blt.gregbot.ui.panels.LogPanel;
 import io.blt.util.Obj;
@@ -132,6 +134,15 @@ public class MainFrame extends JFrame {
         label1.setHorizontalTextPosition(11);
         label1.setText("main area");
         panel2.add(label1, BorderLayout.CENTER);
+        final JToolBar toolBar1 = new JToolBar();
+        panel2.add(toolBar1, BorderLayout.NORTH);
+        final JLabel label2 = new JLabel();
+        label2.setText("Label");
+        toolBar1.add(label2);
+        final HorizontalGlue horizontalGlue1 = new HorizontalGlue();
+        toolBar1.add(horizontalGlue1);
+        final FlatlafThemeToggle flatlafThemeToggle1 = new FlatlafThemeToggle();
+        toolBar1.add(flatlafThemeToggle1);
     }
 
     /**
