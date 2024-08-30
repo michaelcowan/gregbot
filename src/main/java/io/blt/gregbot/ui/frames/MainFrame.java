@@ -33,6 +33,7 @@ public class MainFrame extends JFrame {
     private JPanel contentPane;
     private JSplitPane feedbackSplitPane;
     private JTabbedPane feedbackTabbedPane;
+    private JToolBar toolBar;
 
     public MainFrame() {
         setJMenuBar(buildMenuBar());
@@ -45,6 +46,14 @@ public class MainFrame extends JFrame {
         setTitle(ApplicationProperties.name());
         setSize(scaleDimension(screenSize(), 0.9));
         setLocationRelativeTo(null);
+
+        if (SystemInfo.isMacFullWindowContentSupported) {
+            getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+            getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+            getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
+
+            toolBar.add(Box.createHorizontalStrut(70), 0);
+        }
     }
 
     private JMenuBar buildMenuBar() {
@@ -134,15 +143,12 @@ public class MainFrame extends JFrame {
         label1.setHorizontalTextPosition(11);
         label1.setText("main area");
         panel2.add(label1, BorderLayout.CENTER);
-        final JToolBar toolBar1 = new JToolBar();
-        panel2.add(toolBar1, BorderLayout.NORTH);
-        final JLabel label2 = new JLabel();
-        label2.setText("Label");
-        toolBar1.add(label2);
+        toolBar = new JToolBar();
+        panel2.add(toolBar, BorderLayout.NORTH);
         final HorizontalGlue horizontalGlue1 = new HorizontalGlue();
-        toolBar1.add(horizontalGlue1);
+        toolBar.add(horizontalGlue1);
         final FlatlafThemeToggle flatlafThemeToggle1 = new FlatlafThemeToggle();
-        toolBar1.add(flatlafThemeToggle1);
+        toolBar.add(flatlafThemeToggle1);
     }
 
     /**

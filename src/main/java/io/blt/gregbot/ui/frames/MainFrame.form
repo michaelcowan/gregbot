@@ -56,17 +56,11 @@
                   <text value="main area"/>
                 </properties>
               </component>
-              <toolbar id="ae0e1">
+              <toolbar id="ae0e1" binding="toolBar">
                 <constraints border-constraint="North"/>
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="e40d7" class="javax.swing.JLabel">
-                    <constraints/>
-                    <properties>
-                      <text value="Label"/>
-                    </properties>
-                  </component>
                   <component id="50783" class="io.blt.gregbot.ui.components.HorizontalGlue">
                     <constraints/>
                     <properties/>
