@@ -22,6 +22,8 @@ public final class ApplicationResources {
         TRASH("icons/tools/trash.svg"),
         WRAP("icons/tools/wrap.svg"),
         ALIGN_BOTTOM("icons/tools/align-bottom.svg"),
+        SUN("icons/tools/sun.svg"),
+        MOON("icons/tools/moon.svg"),
         ;
 
         private final String filename;

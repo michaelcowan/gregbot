@@ -56,6 +56,21 @@
                   <text value="main area"/>
                 </properties>
               </component>
+              <toolbar id="ae0e1" binding="toolBar">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="50783" class="io.blt.gregbot.ui.components.HorizontalGlue">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                  <component id="8577" class="io.blt.gregbot.ui.components.FlatlafThemeToggle">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </toolbar>
             </children>
           </grid>
         </children>

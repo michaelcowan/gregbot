@@ -11,6 +11,8 @@ package io.blt.gregbot.ui.frames;
 import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
+import io.blt.gregbot.ui.components.FlatlafThemeToggle;
+import io.blt.gregbot.ui.components.HorizontalGlue;
 import io.blt.gregbot.ui.dialogs.About;
 import io.blt.gregbot.ui.panels.LogPanel;
 import io.blt.util.Obj;
@@ -31,6 +33,7 @@ public class MainFrame extends JFrame {
     private JPanel contentPane;
     private JSplitPane feedbackSplitPane;
     private JTabbedPane feedbackTabbedPane;
+    private JToolBar toolBar;
 
     public MainFrame() {
         setJMenuBar(buildMenuBar());
@@ -43,6 +46,14 @@ public class MainFrame extends JFrame {
         setTitle(ApplicationProperties.name());
         setSize(scaleDimension(screenSize(), 0.9));
         setLocationRelativeTo(null);
+
+        if (SystemInfo.isMacFullWindowContentSupported) {
+            getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+            getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+            getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
+
+            toolBar.add(Box.createHorizontalStrut(70), 0);
+        }
     }
 
     private JMenuBar buildMenuBar() {
@@ -132,6 +143,12 @@ public class MainFrame extends JFrame {
         label1.setHorizontalTextPosition(11);
         label1.setText("main area");
         panel2.add(label1, BorderLayout.CENTER);
+        toolBar = new JToolBar();
+        panel2.add(toolBar, BorderLayout.NORTH);
+        final HorizontalGlue horizontalGlue1 = new HorizontalGlue();
+        toolBar.add(horizontalGlue1);
+        final FlatlafThemeToggle flatlafThemeToggle1 = new FlatlafThemeToggle();
+        toolBar.add(flatlafThemeToggle1);
     }
 
     /**
