@@ -10,7 +10,7 @@
       <scrollpane id="216da" binding="scrollPane">
         <constraints border-constraint="Center"/>
         <properties/>
-        <border type="none"/>
+        <border type="empty"/>
         <children>
           <component id="70a7e" class="io.blt.gregbot.ui.components.LogbackPane" binding="logbackPane">
             <constraints/>

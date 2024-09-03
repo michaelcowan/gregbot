@@ -16,6 +16,7 @@ import static io.blt.gregbot.ApplicationResources.toolIcon;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
 public class LogPanel extends JPanel {
 
@@ -61,6 +62,8 @@ public class LogPanel extends JPanel {
         contentPane.setLayout(new BorderLayout(0, 0));
         scrollPane = new JScrollPane();
         contentPane.add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null,
+                TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         logbackPane = new LogbackPane();
         scrollPane.setViewportView(logbackPane);
         toolbar = new JToolBar();
