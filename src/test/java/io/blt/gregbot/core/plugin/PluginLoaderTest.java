@@ -8,7 +8,7 @@
 
 package io.blt.gregbot.core.plugin;
 
-import io.blt.gregbot.core.properties.Properties;
+import io.blt.gregbot.core.project.Project;
 import io.blt.gregbot.plugin.Plugin;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
@@ -48,7 +48,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldReturnInstanceOfSecretPlugin() throws PluginException {
-            var plugin = new Properties.Plugin(TestableSecretPlugin.class.getName(), Map.of());
+            var plugin = new Project.Plugin(TestableSecretPlugin.class.getName(), Map.of());
 
             var result = loader.load(plugin);
 
@@ -58,7 +58,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldReturnDifferentInstanceOfSecretPluginOnEachCall() throws PluginException {
-            var plugin = new Properties.Plugin(TestableSecretPlugin.class.getName(), Map.of());
+            var plugin = new Project.Plugin(TestableSecretPlugin.class.getName(), Map.of());
 
             var result1 = loader.load(plugin);
             var result2 = loader.load(plugin);
@@ -70,7 +70,7 @@ class PluginLoaderTest {
         @Test
         void loadShouldCallSecretPluginLoadPassingProperties() throws PluginException {
             var properties = Map.of("mock-key", "mock-value");
-            var plugin = new Properties.Plugin(TestableSecretPlugin.class.getName(), properties);
+            var plugin = new Project.Plugin(TestableSecretPlugin.class.getName(), properties);
 
             loader.load(plugin);
 
@@ -86,7 +86,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldThrowWhenPluginTypeCannotBeFound() {
-            var plugin = new Properties.Plugin("UnknownSecretPluginType", Map.of());
+            var plugin = new Project.Plugin("UnknownSecretPluginType", Map.of());
 
             assertThatExceptionOfType(NoSuchElementException.class)
                     .isThrownBy(() -> loader.load(plugin))
@@ -95,7 +95,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldThrowWhenPluginLoadThrows() {
-            var plugin = new Properties.Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of());
+            var plugin = new Project.Plugin(ThrowOnLoadSecretPlugin.class.getName(), Map.of());
 
             assertThatExceptionOfType(PluginException.class)
                     .isThrownBy(() -> loader.load(plugin))
@@ -119,7 +119,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldReturnInstanceOfIdentityPlugin() throws PluginException {
-            var plugin = new Properties.Plugin(TestableIdentityPlugin.class.getName(), Map.of());
+            var plugin = new Project.Plugin(TestableIdentityPlugin.class.getName(), Map.of());
 
             var result = loader.load(plugin);
 
@@ -129,7 +129,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldReturnDifferentInstanceOfIdentityPluginOnEachCall() throws PluginException {
-            var plugin = new Properties.Plugin(TestableIdentityPlugin.class.getName(), Map.of());
+            var plugin = new Project.Plugin(TestableIdentityPlugin.class.getName(), Map.of());
 
             var result1 = loader.load(plugin);
             var result2 = loader.load(plugin);
@@ -141,7 +141,7 @@ class PluginLoaderTest {
         @Test
         void loadShouldCallIdentityPluginLoadPassingProperties() throws PluginException {
             var properties = Map.of("mock-key", "mock-value");
-            var plugin = new Properties.Plugin(TestableIdentityPlugin.class.getName(), properties);
+            var plugin = new Project.Plugin(TestableIdentityPlugin.class.getName(), properties);
 
             loader.load(plugin);
 
@@ -157,7 +157,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldThrowWhenPluginTypeCannotBeFound() {
-            var plugin = new Properties.Plugin("UnknownIdentityPluginType", Map.of());
+            var plugin = new Project.Plugin("UnknownIdentityPluginType", Map.of());
 
             assertThatExceptionOfType(NoSuchElementException.class)
                     .isThrownBy(() -> loader.load(plugin))
@@ -166,7 +166,7 @@ class PluginLoaderTest {
 
         @Test
         void loadShouldThrowWhenPluginLoadThrows() {
-            var plugin = new Properties.Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of());
+            var plugin = new Project.Plugin(ThrowOnLoadIdentityPlugin.class.getName(), Map.of());
 
             assertThatExceptionOfType(PluginException.class)
                     .isThrownBy(() -> loader.load(plugin))

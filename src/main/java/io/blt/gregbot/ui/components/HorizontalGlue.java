@@ -8,7 +8,6 @@
 
 package io.blt.gregbot.ui.components;
 
-import java.awt.*;
 import javax.swing.*;
 
 public class HorizontalGlue extends JComponent {

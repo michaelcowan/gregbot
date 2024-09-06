@@ -11,9 +11,9 @@ package io.blt.gregbot.core.services;
 import io.blt.gregbot.core.plugin.PluginLoader;
 import io.blt.gregbot.core.plugin.SecretRenderException;
 import io.blt.gregbot.core.plugin.SecretRenderer;
-import io.blt.gregbot.core.properties.Properties;
-import io.blt.gregbot.core.properties.Properties.Identity;
-import io.blt.gregbot.core.properties.Properties.Secret;
+import io.blt.gregbot.core.project.Project;
+import io.blt.gregbot.core.project.Project.Identity;
+import io.blt.gregbot.core.project.Project.Secret;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.gregbot.plugin.identities.IdentityPlugin;
 import io.blt.gregbot.plugin.secrets.SecretPlugin;
@@ -84,7 +84,7 @@ public class IdentityService {
         return isNull(rendered) ? null : identityLoader.load(rendered);
     }
 
-    private Properties.Plugin renderedPluginProperties(Identity identity)
+    private Project.Plugin renderedPluginProperties(Identity identity)
             throws SecretRenderException, PluginException {
         if (isNull(identity.secrets())) {
             return identity.plugin();
@@ -94,7 +94,7 @@ public class IdentityService {
 
         var properties = Ctr.transformValues(identity.plugin().properties(), secretRenderer::render);
 
-        return new Properties.Plugin(identity.plugin().type(), properties);
+        return new Project.Plugin(identity.plugin().type(), properties);
     }
 
     private Secret findSecret(Identity identity) {

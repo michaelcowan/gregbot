@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2023 Mike Cowan.
+ * Copyright (c) 2023-2024 Mike Cowan.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
  * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package io.blt.gregbot.core.properties;
+package io.blt.gregbot.core.project;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,14 +24,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PropertiesModuleTest {
+class ProjectModuleTest {
 
     ObjectMapper mapper;
 
     @BeforeEach
     void beforeEach() {
         mapper = new ObjectMapper();
-        mapper.registerModule(new PropertiesModule());
+        mapper.registerModule(new ProjectModule());
     }
 
     @Test
