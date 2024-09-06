@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2023 Mike Cowan.
+ * Copyright (c) 2023-2024 Mike Cowan.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
  * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package io.blt.gregbot.core.properties;
+package io.blt.gregbot.core.project;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -20,30 +20,30 @@ import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
-
 /**
- * Represents all properties of the system with non-null and immutable guarantees.
+ * Represents all data of the system with non-null and immutable guarantees.
  * This is to both simplify code and allow the records to be safely passed and accessed.
  * <p>
  * Also provides deserialization (currently only JSON) and validation capabilities e.g.
  * <pre>{@code
- * var properties = Properties.loadFromJson("properties.json");
+ * var project = Project.loadFromJson("project.json");
  * }</pre>
  * Which will:
  * <ol>
  *     <li>Load the resource file</li>
- *     <li>Deserialize into {@link Properties} and nested {@code record}s</li>
+ *     <li>Deserialize into {@link Project} and nested {@code record}s</li>
  *     <li>Perform validation, throwing on failure</li>
  * </ol>
  * </p>
  */
-public record Properties(
+public record Project(
         @Valid @NotNull Client client,
         @Valid @NotNull Map<@NotEmpty String, Secret> secrets,
         @Valid @NotNull Map<@NotEmpty String, Environment> environments,
@@ -122,40 +122,47 @@ public record Properties(
     private static final Validator VALIDATOR = buildValidator();
 
     /**
-     * Returns an instance of {@link Properties} created from a JSON resource file.
+     * Returns an instance of {@link Project} created from a JSON resource file.
      * <p>
      * This method will:
      *     <ol>
-     *         <li>Load the resource file</li>
-     *         <li>Deserialize into {@link Properties} and nested {@code record}s</li>
+     *         <li>Deserialize {@code stream} into {@link Project} and nested {@code record}s</li>
      *         <li>Perform validation, throwing on failure</li>
      *     </ol>
      * </p>
      *
-     * @param filename resource file to load
-     * @return instance of {@link Properties}
-     * @throws IOException if the file cannot be read or there is a validation fails
+     * @param stream resource file to load
+     * @return instance of {@link Project}
+     * @throws IOException if the stream cannot be read or there is a validation failure
      */
-    public static Properties loadFromJson(String filename) throws IOException {
-        try (var stream = Properties.class.getResourceAsStream(filename)) {
-            if (isNull(stream)) {
-                throw new IOException("Cannot read file '" + filename + "'");
-            }
-            return validateAndReturn(MAPPER.readValue(stream, Properties.class));
+    public static Project loadFromJson(InputStream stream) throws IOException {
+        return validateAndReturn(MAPPER.readValue(stream, Project.class));
+    }
+
+    /**
+     * Overload of {@link Project#loadFromJson(InputStream)} that loads from a file.
+     *
+     * @param filename file to load
+     * @return instance of {@link Project}
+     * @throws IOException if the file cannot be read or there is a validation failure
+     */
+    public static Project loadFromJson(String filename) throws IOException {
+        try (var stream = new FileInputStream(filename)) {
+            return loadFromJson(stream);
         }
     }
 
-    private static Properties validateAndReturn(Properties properties) throws IOException {
-        var violations = VALIDATOR.validate(properties)
+    private static Project validateAndReturn(Project project) throws IOException {
+        var violations = VALIDATOR.validate(project)
                 .stream()
-                .map(Properties::describeViolation)
+                .map(Project::describeViolation)
                 .collect(Collectors.joining(", "));
 
         if (!violations.isEmpty()) {
             throw new IOException("Failed validation because " + violations);
         }
 
-        return properties;
+        return project;
     }
 
     private static <T> String describeViolation(ConstraintViolation<T> violation) {
@@ -167,7 +174,7 @@ public record Properties(
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .propertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE)
-                .addModule(new PropertiesModule())
+                .addModule(new ProjectModule())
                 .build();
     }
 

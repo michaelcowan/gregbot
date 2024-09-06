@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2023 Mike Cowan.
+ * Copyright (c) 2023-2024 Mike Cowan.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
  * file, You can obtain one at: https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package io.blt.gregbot.core.properties;
+package io.blt.gregbot.core.project;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -44,9 +44,9 @@ import java.util.Map;
  * <a href="https://github.com/FasterXML/jackson-databind/issues/3084">jackson-databind issue 3084</a>
  * </p>
  */
-public class PropertiesModule extends SimpleModule {
+public class ProjectModule extends SimpleModule {
 
-    public PropertiesModule() {
+    public ProjectModule() {
         super();
 
         setDeserializerModifier(new BeanDeserializerModifier() {

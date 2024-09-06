@@ -8,7 +8,7 @@
 
 package io.blt.gregbot.core.plugin;
 
-import io.blt.gregbot.core.properties.Properties;
+import io.blt.gregbot.core.project.Project;
 import io.blt.gregbot.plugin.Plugin;
 import io.blt.gregbot.plugin.PluginException;
 import io.blt.util.Obj;
@@ -38,7 +38,7 @@ public class PluginLoader<T extends Plugin> {
      * @throws NoSuchElementException if no plugin matches the properties
      * @throws NullPointerException   if {@code plugin} is {@code null}
      */
-    public T load(Properties.Plugin plugin) throws PluginException {
+    public T load(Project.Plugin plugin) throws PluginException {
         return Obj.poke(findPluginOrThrow(plugin), p -> p.load(plugin.properties()));
     }
 
@@ -53,7 +53,7 @@ public class PluginLoader<T extends Plugin> {
                 .toList();
     }
 
-    private T findPluginOrThrow(Properties.Plugin plugin) {
+    private T findPluginOrThrow(Project.Plugin plugin) {
         return loader.stream()
                 .filter(p -> providerType(p).equals(plugin.type()))
                 .map(ServiceLoader.Provider::get)
