@@ -9,12 +9,15 @@
 package io.blt.gregbot.ui.controllers;
 
 import io.blt.gregbot.core.project.Project;
+import io.blt.test.ModelTestUtils;
+import io.blt.util.Ctr;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 class ProjectControllerTest {
 
@@ -40,6 +43,34 @@ class ProjectControllerTest {
                     .containsOnly("Skynet");
         }
 
+        @Test
+        void shouldBuildCollectionsTreeModel() {
+            var models = controller.collectionsTreeModel();
+
+            var assertableModels = Ctr.transformValues(models, ModelTestUtils::asString);
+
+            assertThat(assertableModels)
+                    .containsExactly(
+                            entry("Skynet", """
+                                    root
+                                      Terminator
+                                        Emergency
+                                          Emergency Shutdown Terminator
+                                        List Terminators
+                                        Fetch Terminator
+                                      Aerial
+                                        Emergency
+                                          Emergency Shutdown Aerial
+                                        List Aerials
+                                        Fetch Aerial
+                                      Emergency
+                                        Emergency Shutdown Terminator
+                                        Emergency Shutdown Aerial
+                                      Health Check
+                                    """)
+                    );
+        }
+
         @Nested
         class OnReload {
 
@@ -60,8 +91,36 @@ class ProjectControllerTest {
                         .containsOnly("Transporter", "Warp Drive");
             }
 
+            @Test
+            void shouldReplaceCollectionsTreeModel() {
+                var models = controller.collectionsTreeModel();
+
+                var assertableModels = Ctr.transformValues(models, ModelTestUtils::asString);
+
+                assertThat(assertableModels)
+                        .containsOnly(
+                                entry("Transporter", """
+                                        root
+                                          Crew
+                                            Beam Down Crew
+                                            Transport Crew
+                                          Planet
+                                            Scan Planet
+                                          Health Check
+                                        """),
+                                entry("Warp Drive", """
+                                        root
+                                          Operations
+                                            Engage Warp Drive
+                                            Disengage Warp Drive
+                                          Health Check
+                                        """)
+                        );
+            }
+
         }
 
     }
+
 
 }
