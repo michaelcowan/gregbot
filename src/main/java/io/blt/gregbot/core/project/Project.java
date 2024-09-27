@@ -82,7 +82,7 @@ public record Project(
 
     public record Collection(
             @Valid @NotNull Map<@NotEmpty String, Request> requests,
-            @Valid @NotNull Layout layout) {
+            @Valid @NotNull Folder layout) {
 
         public record Request(
                 @Valid @NotNull Map<@NotEmpty String, String> headers,
@@ -102,14 +102,9 @@ public record Project(
             }
         }
 
-        public record Layout(
+        public record Folder(
                 @Valid @NotNull List<String> requests,
                 @Valid @NotNull Map<@NotEmpty String, Folder> folders) {
-
-            public record Folder(
-                    @Valid @NotNull List<String> requests,
-                    @Valid @NotNull Map<@NotEmpty String, Folder> folders) {
-            }
         }
     }
 

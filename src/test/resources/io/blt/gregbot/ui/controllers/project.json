@@ -1,0 +1,164 @@
+{
+  "client": {
+    "version": "HTTP_1_1",
+    "redirect": "NORMAL",
+    "connectionTimeout": 10,
+    "requestTimeout": 30
+  },
+  "secrets": {
+    "Federation Vault": {
+      "plugin": {
+        "type": "io.blt.gregbot.plugin.VaultOidc",
+        "properties": {
+          "host": "https://vault.federation.com"
+        }
+      }
+    }
+  },
+  "environments": {
+    "Earth Space Station": {
+      "variables": {
+        "transporter_host": "http://localhost:8082"
+      }
+    },
+    "Federation Stage": {
+      "variables": {
+        "transporter_host": "https://stage-transporter.federation.com"
+      }
+    },
+    "Federation Prod": {
+      "variables": {
+        "transporter_host": "https://transporter.federation.com"
+      }
+    }
+  },
+  "identities": {
+    "Jean-Luc Picard": {
+      "category": "Captain",
+      "secrets": "Federation Vault",
+      "variables": {
+        "api_key": "federation-80C88"
+      },
+      "plugin": {
+        "type": "com.federation.gregbot.plugin.ImsService",
+        "properties": {
+          "host": "https://ims.federation.com",
+          "secret": "[federation/jlp/ims/prod/secret]",
+          "variable": "auth_token"
+        }
+      }
+    },
+    "Data": {
+      "secrets": "Federation Vault",
+      "plugin": {
+        "type": "com.federation.gregbot.plugin.ImsUser",
+        "properties": {
+          "host": "https://ims.federation.com",
+          "secret": "[federation/data/ims/prod/secret]",
+          "variable": "auth_token"
+        }
+      }
+    },
+    "Beverly Crusher": {
+      "secrets": "Federation Vault",
+      "plugin": {
+        "type": "com.federation.gregbot.plugin.ImsUser",
+        "properties": {
+          "host": "https://ims.federation.com",
+          "secret": "[federation/bc/ims/prod/secret]",
+          "variable": "auth_token"
+        }
+      }
+    }
+  },
+  "collections": {
+    "Transporter": {
+      "requests": {
+        "Health Check": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "get",
+          "path": "{{transporter_host}}/ping"
+        },
+        "Beam Down Crew": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "POST",
+          "path": "{{transporter_host}}/beams"
+        },
+        "Transport Crew": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "GET",
+          "path": "{{transporter_host}}/crews/{{crew_id}}"
+        },
+        "Scan Planet": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "GET",
+          "path": "{{transporter_host}}/planets/{{planet_id}}"
+        }
+      },
+      "layout": {
+        "requests": [
+          "Health Check"
+        ],
+        "folders": {
+          "Crew": {
+            "requests": [
+              "Beam Down Crew",
+              "Transport Crew"
+            ]
+          },
+          "Planet": {
+            "requests": [
+              "Scan Planet"
+            ]
+          }
+        }
+      }
+    },
+    "Warp Drive": {
+      "requests": {
+        "Health Check": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "get",
+          "path": "{{warp_host}}/ping"
+        },
+        "Engage Warp Drive": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "POST",
+          "path": "{{warp_host}}/engage"
+        },
+        "Disengage Warp Drive": {
+          "headers": {
+            "x-api-key": "{{api_key}}"
+          },
+          "verb": "DELETE",
+          "path": "{{warp_host}}/disengage"
+        }
+      },
+      "layout": {
+        "requests": [
+          "Health Check"
+        ],
+        "folders": {
+          "Operations": {
+            "requests": [
+              "Engage Warp Drive",
+              "Disengage Warp Drive"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

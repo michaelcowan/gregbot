@@ -33,7 +33,7 @@ public class Ui {
     }
 
     Ui() {
-        log.info("Starting {} {} built on {}",
+        log.info("Starting {} {} born on {}",
                 ApplicationProperties.name(),
                 ApplicationProperties.version(),
                 ApplicationProperties.timestamp());

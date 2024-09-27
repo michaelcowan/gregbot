@@ -48,14 +48,6 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="3bba8" class="javax.swing.JLabel">
-                <constraints border-constraint="Center"/>
-                <properties>
-                  <horizontalAlignment value="0"/>
-                  <horizontalTextPosition value="11"/>
-                  <text value="main area"/>
-                </properties>
-              </component>
               <toolbar id="ae0e1" binding="toolBar">
                 <constraints border-constraint="North"/>
                 <properties/>
@@ -71,6 +63,26 @@
                   </component>
                 </children>
               </toolbar>
+              <splitpane id="3a792">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <resizeWeight value="0.2"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <nested-form id="2ff93" form-file="io/blt/gregbot/ui/panels/CollectionPanel.form" binding="collectionPanel">
+                    <constraints>
+                      <splitpane position="left"/>
+                    </constraints>
+                  </nested-form>
+                  <component id="3bba8" class="javax.swing.JLabel" binding="mainArea">
+                    <constraints>
+                      <splitpane position="right"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                </children>
+              </splitpane>
             </children>
           </grid>
         </children>

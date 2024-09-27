@@ -11,11 +11,15 @@ package io.blt.gregbot.ui.frames;
 import com.formdev.flatlaf.util.SystemInfo;
 import io.blt.gregbot.ApplicationProperties;
 import io.blt.gregbot.ApplicationResources;
+import io.blt.gregbot.core.project.Project;
 import io.blt.gregbot.ui.components.FlatlafThemeToggle;
 import io.blt.gregbot.ui.components.HorizontalGlue;
+import io.blt.gregbot.ui.controllers.ProjectController;
 import io.blt.gregbot.ui.dialogs.About;
+import io.blt.gregbot.ui.panels.CollectionPanel;
 import io.blt.gregbot.ui.panels.LogPanel;
 import io.blt.util.Obj;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +38,8 @@ public class MainFrame extends JFrame {
     private JSplitPane feedbackSplitPane;
     private JTabbedPane feedbackTabbedPane;
     private JToolBar toolBar;
+    private CollectionPanel collectionPanel;
+    private JLabel mainArea;
 
     public MainFrame() {
         setJMenuBar(buildMenuBar());
@@ -53,6 +59,13 @@ public class MainFrame extends JFrame {
             getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
 
             toolBar.add(Box.createHorizontalStrut(70), 0);
+        }
+
+        try {
+            // TODO This is temporary till I add some rules around finding projects
+            loadProject(Project.loadFromJson("project.json"));
+        } catch (IOException e) {
+            log.error("Failed to load project", e);
         }
     }
 
@@ -93,6 +106,11 @@ public class MainFrame extends JFrame {
 
     private JMenuItem buildMenuItemWithAction(String text, ActionListener action) {
         return Obj.poke(new JMenuItem(text), i -> i.addActionListener(action));
+    }
+
+    private void loadProject(Project project) {
+        var controller = new ProjectController().load(project);
+        collectionPanel.setModels(controller.collectionNamesListModel(), controller.collectionsTreeModel());
     }
 
     private boolean shouldExit() {
@@ -138,17 +156,19 @@ public class MainFrame extends JFrame {
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new BorderLayout(0, 0));
         feedbackSplitPane.setLeftComponent(panel2);
-        final JLabel label1 = new JLabel();
-        label1.setHorizontalAlignment(0);
-        label1.setHorizontalTextPosition(11);
-        label1.setText("main area");
-        panel2.add(label1, BorderLayout.CENTER);
         toolBar = new JToolBar();
         panel2.add(toolBar, BorderLayout.NORTH);
         final HorizontalGlue horizontalGlue1 = new HorizontalGlue();
         toolBar.add(horizontalGlue1);
         final FlatlafThemeToggle flatlafThemeToggle1 = new FlatlafThemeToggle();
         toolBar.add(flatlafThemeToggle1);
+        final JSplitPane splitPane1 = new JSplitPane();
+        splitPane1.setResizeWeight(0.2);
+        panel2.add(splitPane1, BorderLayout.CENTER);
+        collectionPanel = new CollectionPanel();
+        splitPane1.setLeftComponent(collectionPanel.$$$getRootComponent$$$());
+        mainArea = new JLabel();
+        splitPane1.setRightComponent(mainArea);
     }
 
     /**
