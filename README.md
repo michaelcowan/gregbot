@@ -1,5 +1,5 @@
 # GregBot
-> REST Client for developers with a focus on [identity](#identity), [secret management](#secret-management) and 
+> HTTP Client for developers with a focus on [identity](#identity), [secret management](#secret-management) and 
 > [request organisation](#request-organisation)
 
 [![CircleCI](https://img.shields.io/circleci/build/github/michaelcowan/gregbot/master.svg)](https://dl.circleci.com/status-badge/redirect/gh/michaelcowan/gregbot/tree/master)
