@@ -8,6 +8,7 @@
 
 package io.blt.gregbot.ui.panels;
 
+import io.blt.gregbot.ui.utils.TreeExpansionState;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -22,6 +23,7 @@ public class CollectionPanel extends JPanel {
     private JTree requestsTree;
 
     private Map<String, DefaultTreeModel> collections;
+    private TreeExpansionState collectionsExpansionState;
 
     public CollectionPanel() {
         Stream.of(namesList, requestsTree)
@@ -36,6 +38,7 @@ public class CollectionPanel extends JPanel {
 
     public void setModels(ListModel<String> names, Map<String, DefaultTreeModel> collections) {
         this.collections = collections;
+        this.collectionsExpansionState = new TreeExpansionState();
 
         namesList.setModel(names);
         requestsTree.setModel(null);
@@ -44,7 +47,9 @@ public class CollectionPanel extends JPanel {
     }
 
     private void setCollectionTo(String name) {
+        collectionsExpansionState.store(requestsTree);
         requestsTree.setModel(collections.get(name));
+        collectionsExpansionState.restore(requestsTree);
     }
 
     {
