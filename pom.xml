@@ -56,7 +56,7 @@
         <flatlaf.version>3.5.1</flatlaf.version>
         <flatlaf-fonts-jetbrains>2.304</flatlaf-fonts-jetbrains>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
-        <httpcore5.version>5.3</httpcore5.version>
+        <httpcore5.version>5.3.1</httpcore5.version>
         <jackson.version>2.18.0</jackson.version>
         <jakarta-el.version>5.0.0-M1</jakarta-el.version>
         <jsonassert.version>1.5.3</jsonassert.version>
