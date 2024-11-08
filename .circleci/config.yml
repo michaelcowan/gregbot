@@ -9,10 +9,10 @@ orbs:
 executors:
   java17:
     docker:
-      - image: cimg/openjdk:17.0.13
+      - image: cimg/openjdk:21.0.5
   java21:
     docker:
-      - image: cimg/openjdk:21.0.2
+      - image: cimg/openjdk:21.0.5
 
 jobs:
   coverage:
