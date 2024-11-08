@@ -18,4 +18,4 @@ Avoid the need to store secrets locally by providing:
 2. a mechanism to allow identities to reference secrets not stored locally
 
 ## Request Organisation
-Allow a request to exist in many groups (which can be heavily nested) without the need to copy/paste the request itself.
+Allow a request to be referenced by many groups (which can be heavily nested) avoiding the need to copy/paste.
