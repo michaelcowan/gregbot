@@ -64,7 +64,7 @@
         <logback-classic.version>1.5.12</logback-classic.version>
         <mockito.version>5.13.0</mockito.version>
         <vault-driver.version>5.1.0</vault-driver.version>
-        <wiremock.version>3.9.1</wiremock.version>
+        <wiremock.version>3.9.2</wiremock.version>
 
         <jacoco-plugin.version>0.8.12</jacoco-plugin.version>
         <assembly-plugin.version>3.7.1</assembly-plugin.version>
