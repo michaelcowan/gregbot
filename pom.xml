@@ -53,7 +53,7 @@
         <blt-assertj.version>1.0.2</blt-assertj.version>
         <blt-core.version>1.1.1</blt-core.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
-        <flatlaf.version>3.5.2</flatlaf.version>
+        <flatlaf.version>3.5.4</flatlaf.version>
         <flatlaf-fonts-jetbrains>2.304</flatlaf-fonts-jetbrains>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <httpcore5.version>5.3.1</httpcore5.version>
