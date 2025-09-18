@@ -49,7 +49,7 @@
         <maven.build.timestamp.format>MMMM dd, yyyy</maven.build.timestamp.format>
         <copyright>Copyright © 2023-2024 Mike Cowan</copyright>
 
-        <assertj.version>3.27.2</assertj.version>
+        <assertj.version>3.27.5</assertj.version>
         <blt-assertj.version>1.0.2</blt-assertj.version>
         <blt-core.version>1.1.1</blt-core.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
